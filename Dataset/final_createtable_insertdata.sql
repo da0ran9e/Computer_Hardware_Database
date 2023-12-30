@@ -54,7 +54,7 @@ CREATE TABLE orders
   shipping_address VARCHAR(150) NOT NULL,
   total_amount NUMERIC(12,2) NOT NULL,
   status VARCHAR(15) NOT NULL,
-  payment_type CHAR(5) NOT NULL,
+  payment_type CHAR(6) NOT NULL,
   user_id INT NOT NULL,
   PRIMARY KEY (order_id),
   FOREIGN KEY (user_id) REFERENCES account(user_id)
