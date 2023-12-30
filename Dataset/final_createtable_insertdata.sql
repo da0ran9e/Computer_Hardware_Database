@@ -17,7 +17,7 @@ CREATE TABLE item
   product_name VARCHAR(100),
   description VARCHAR(150),
   description_1 VARCHAR(150),
-  description_2 VARCHAR(150,
+  description_2 VARCHAR(150),
   description_3 VARCHAR(150),
   description_4 VARCHAR(150),
   standard_cost NUMERIC(6,2) NOT NULL,
@@ -37,12 +37,11 @@ CREATE TABLE country
 
 CREATE TABLE account
 (
-  user_id INT NOT NULL,
+  user_id SERIAL PRIMARY KEY,
   user_name VARCHAR(50) NOT NULL,
   password VARCHAR(50) NOT NULL,
   email VARCHAR(150) NOT NULL,
-  phone_number VARCHAR(20) DEFAULT NULL,
-  PRIMARY KEY (user_id)
+  phone_number VARCHAR(20) DEFAULT NULL
 );
 
 -- ALTER TABLE orders
@@ -50,10 +49,10 @@ CREATE TABLE account
 
 CREATE TABLE orders
 (
-  order_id INT NOT NULL,
+  order_id SERIAL,
   order_date DATE NOT NULL,
   shipping_address VARCHAR(150) NOT NULL,
-  total_amount NUMERIC(10,2) NOT NULL,
+  total_amount NUMERIC(12,2) NOT NULL,
   status VARCHAR(15) NOT NULL,
   payment_type CHAR(5) NOT NULL,
   user_id INT NOT NULL,
@@ -63,7 +62,7 @@ CREATE TABLE orders
 
 CREATE TABLE cart
 (
-  cart_id INT NOT NULL,
+  cart_id SERIAL,
   user_id INT NOT NULL,
   PRIMARY KEY (cart_id),
   FOREIGN KEY (user_id) REFERENCES account(user_id)
@@ -130,21 +129,16 @@ CREATE TABLE order_item
 -- ADD CONSTRAINT FK_order_item_order_id
 -- FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
 
---DELETE FROM category;
-
--- \COPY item(product_id, product_name, description, description_1, description_2, description_3, description_4, standard_cost, list_price, category_id)
--- FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/hardwareStore.csv' CSV HEADER DELIMITER ',';
-
--- \COPY country(country_id, country_name, region_id)
--- FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/hardwareStore.csv' CSV HEADER DELIMITER ',';
-
--- \COPY location(location_id, address, postal_code, city, state, country_id)
--- FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/hardwareStore.csv' CSV HEADER DELIMITER ',';
-
--- \COPY warehouse(warehouse_id, warehouse_name, location_id)
--- FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/hardwareStore.csv' CSV HEADER DELIMITER ',';
-
--- \COPY inventory(quantity, warehouse_id, product_id)
--- FROM '/path/to/hardwareStore.csv' CSV HEADER DELIMITER ',';
--- DELETE FROM warehouse;
-
+computerhardware=# \COPY category(category_id, category_name) FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/git/Computer_Hardware_Database/Dataset/categories.csv' CSV HEADER DELIMITER ',';
+COPY 4
+computerhardware-# \COPY country(country_id, region_id, country_name) FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/git/Computer_Hardware_Database/Dataset/countries.csv' CSV HEADER DELIMITER ',';
+COPY 6
+computerhardware-# \COPY item(category_id, product_id, product_name, description, description_1, description_2, description_3, description_4, standard_cost, list_price) FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/git/Computer_Hardware_Database/Dataset/item.txt' WITH DELIMITER E'\t'; 
+COPY 208
+computerhardware-# \COPY location(country_id, location_id, address, postal_code, city, state)FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/git/Computer_Hardware_Database/Dataset/locations.csv' CSV HEADER DELIMITER ',';
+COPY 9
+computerhardware-# \COPY warehouse(location_id, warehouse_id, warehouse_name) FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/git/Computer_Hardware_Database/Dataset/warehouse.csv' CSV HEADER DELIMITER ',';
+COPY 9
+computerhardware-# \COPY inventory(product_id, warehouse_id, quantity)FROM '/Users/trinhdiemquynh/Documents/DATABASE/project/git/Computer_Hardware_Database/Dataset/inventory.csv' CSV HEADER DELIMITER ','; 
+COPY 1112
+computerhardware-# 
