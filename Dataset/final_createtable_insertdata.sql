@@ -38,7 +38,7 @@ CREATE TABLE country
 CREATE TABLE account
 (
   user_id SERIAL PRIMARY KEY,
-  username VARCHAR(50) NOT NULL,
+  user_name VARCHAR(50) NOT NULL,
   password VARCHAR(50) NOT NULL,
   email VARCHAR(150) NOT NULL,
   phone_number VARCHAR(20) DEFAULT NULL
