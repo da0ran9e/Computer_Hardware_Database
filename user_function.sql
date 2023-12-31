@@ -4,12 +4,12 @@ RETURNS INTEGER AS $$
 DECLARE
     result INTEGER;
 BEGIN
-    -- Check if the username already exists
-    IF EXISTS (SELECT 1 FROM account WHERE user_name = in_username) THEN
-        -- Username already exists, set result to 0
+    -- Check if the email already exists
+    IF EXISTS (SELECT 1 FROM account WHERE email = in_email) THEN
+        -- email already exists, set result to 0
         result := 0;
     ELSE
-        -- Username doesn't exist, proceed with the insertion
+        -- email doesn't exist, proceed with the insertion
         INSERT INTO account (user_name, password, email, phone_number)
         VALUES (in_username, in_password, in_email, in_phone_number);
 
@@ -19,16 +19,15 @@ BEGIN
     RETURN result;
 END;
 $$ LANGUAGE plpgsql;
---SELECT register_account('user3', 'password3', 'user3@gmail.com','');
---DROP FUNCTION IF EXISTS register_account(VARCHAR(50), VARCHAR(50));
+--SELECT register_account('user4', 'password4', 'user4@gmail.com','368-383-2839');
 
--- Function to add a phone_number to an account
-CREATE OR REPLACE FUNCTION add_phone_number(in_username VARCHAR(50), in_phone_number VARCHAR(20))
+-- Function to add/change a phone_number to an account
+CREATE OR REPLACE FUNCTION add_phone_number(in_email VARCHAR(150), in_phone_number VARCHAR(20))
 RETURNS INTEGER AS $$
 BEGIN
     UPDATE account
     SET phone_number = in_phone_number
-    WHERE user_name = in_username;
+    WHERE email = in_email;
 
     IF FOUND THEN
         RETURN 1; -- Success
@@ -37,39 +36,40 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT add_phone_number('user1', '123-456-7890');
+--SELECT add_phone_number('user1@gmail.com', '123-456-7890');
 
+--DROP FUNCTION login_account(character varying,character varying)
 -- Function to login
-CREATE OR REPLACE FUNCTION login_account(in_username VARCHAR(50), in_password VARCHAR(50))
+CREATE OR REPLACE FUNCTION login_account(in_email VARCHAR(150), in_password VARCHAR(50))
 RETURNS INTEGER AS $$
 DECLARE
     user_exists INTEGER;
 BEGIN
     SELECT COUNT(*) INTO user_exists
     FROM account
-    WHERE user_name = in_username AND password = in_password;
+    WHERE email = in_email AND password = in_password;
 
     RETURN user_exists;
 END;
 $$ LANGUAGE plpgsql;
+--SELECT login_account('user1@gmail.com', 'password1');
 --SELECT login_account('user1', 'password1');
---SELECT login_account('usern1', 'password1');
 
-
+--DROP FUNCTION change_password(character varying,character varying, character varying)
 -- Function to change password
-CREATE OR REPLACE FUNCTION change_password(in_username VARCHAR(50), in_old_password VARCHAR(50), in_new_password VARCHAR(50))
+CREATE OR REPLACE FUNCTION change_password(in_email VARCHAR(150), in_old_password VARCHAR(50), in_new_password VARCHAR(50))
 RETURNS INTEGER AS $$
 DECLARE
     user_exists INTEGER;
 BEGIN
     SELECT COUNT(*) INTO user_exists
     FROM account
-    WHERE user_name = in_username AND password = in_old_password;
+    WHERE email = in_email AND password = in_old_password;
 
     IF user_exists > 0 THEN
         UPDATE account
         SET password = in_new_password
-        WHERE user_name = in_username;
+        WHERE email = in_email;
         
         RETURN 1; -- Success
     ELSE
@@ -77,16 +77,17 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT change_password('user1', 'new', 'password1');
+--SELECT change_password('user1@gmail.com', 'password', 'password1');
 
---DROP FUNCTION IF EXISTS get_user_cart(VARCHAR(50))
+
+--DROP FUNCTION IF EXISTS get_user_cart(character varying)
 -- Function to get cart of a user
-CREATE OR REPLACE FUNCTION get_user_cart(in_user_name VARCHAR(50))
-RETURNS TABLE (product_id INT, product_name VARCHAR(100), quantity INT, list_price NUMERIC(6,2), total_list_price NUMERIC(12,2))
+CREATE OR REPLACE FUNCTION get_user_cart(in_email VARCHAR(150))
+RETURNS TABLE (product_id INT, product_name VARCHAR(100), quantity INT, standard_cost NUMERIC(6,2), total_list_price NUMERIC(12,2))
 AS $$
 BEGIN
     RETURN QUERY SELECT
-        i.product_id, i.product_name, ci.quantity, i.list_price, ci.quantity*i.list_price AS total_list_price
+        i.product_id, i.product_name, ci.quantity, i.standard_cost, ci.quantity*i.standard_cost AS total_list_price
     FROM
         account a
     JOIN
@@ -96,20 +97,20 @@ BEGIN
     JOIN
         item i ON ci.product_id = i.product_id
     WHERE
-        a.user_name = in_user_name;
+        a.email = in_email;
 END;
 $$ LANGUAGE plpgsql;
---SELECT * FROM get_user_cart('user3'); 
+--SELECT * FROM get_user_cart('user3@gmail.com'); 
 
-
+--DROP FUNCTION IF EXISTS add_item_to_cart(int, character varying)
 -- Function to add an item to cart
-CREATE OR REPLACE FUNCTION add_item_to_cart(in_product_id INT, in_username VARCHAR(50))
+CREATE OR REPLACE FUNCTION add_item_to_cart(in_product_id INT, in_email VARCHAR(150))
 RETURNS INTEGER AS $$
 DECLARE
     in_user_id INT;
     in_cart_id INT;
 BEGIN
-    SELECT user_id INTO in_user_id FROM account WHERE user_name = in_username;
+    SELECT user_id INTO in_user_id FROM account WHERE email = in_email;
     SELECT cart_id INTO in_cart_id FROM cart WHERE user_id = in_user_id;
 
     IF in_user_id IS NOT NULL AND in_cart_id IS NOT NULL THEN
@@ -125,17 +126,17 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT add_item_to_cart(243, 'user3'); 
+--SELECT add_item_to_cart(211, 'user3@gmail.com'); 
 
-
+--DROP FUNCTION IF EXISTS remove_item_from_cart(int, character varying)
 -- Function to remove an item from cart
-CREATE OR REPLACE FUNCTION remove_item_from_cart(in_product_id INT, in_username VARCHAR(50))
+CREATE OR REPLACE FUNCTION remove_item_from_cart(in_product_id INT, in_email VARCHAR(150))
 RETURNS INTEGER AS $$
 DECLARE
     in_user_id INT;
     in_cart_id INT;
 BEGIN
-    SELECT user_id INTO in_user_id FROM account WHERE user_name = in_username;
+    SELECT user_id INTO in_user_id FROM account WHERE email = in_email;
     SELECT cart_id INTO in_cart_id FROM cart WHERE user_id = in_user_id;
 
     IF in_cart_id IS NOT NULL AND in_product_id IS NOT NULL THEN
@@ -160,18 +161,18 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT remove_item_from_cart(5, 'user3'); 
+--SELECT remove_item_from_cart(211, 'user3@gmail.com'); 
 
-
+--DROP FUNCTION IF EXISTS create_order(character varying)
 -- Function to create an order
-CREATE OR REPLACE FUNCTION create_order(in_username VARCHAR(50))
+CREATE OR REPLACE FUNCTION create_order(in_email VARCHAR(150))
 RETURNS INTEGER AS $$
 DECLARE
     in_user_id INT;
     in_cart_id INT;
     in_order_id INT;
 BEGIN
-    SELECT user_id INTO in_user_id FROM account WHERE user_name = in_username;
+    SELECT user_id INTO in_user_id FROM account WHERE email = in_email;
     SELECT cart_id INTO in_cart_id FROM cart WHERE user_id = in_user_id;
 
     IF in_cart_id IS NOT NULL THEN
@@ -186,7 +187,7 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT create_order('user1');
+--SELECT create_order('user4@gmail.com');
 
 
 -- Function to add an item to order and delete from cart
@@ -237,7 +238,7 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
--- SELECT add_item_to_order(243, 2, 9) AS result;
+-- SELECT add_item_to_order(211, 2, 9) AS result;
 
 
 -- Function to remove an item from order by one
@@ -284,7 +285,7 @@ RETURNS TABLE (
     user_id INT,
     product_id INT,
     product_name VARCHAR(100),
-	list_price NUMERIC(6,2),
+	standard_cost NUMERIC(6,2),
     quantity INT,
 	total_list_price NUMERIC(12,2),
     warehouse_id INT
@@ -302,9 +303,9 @@ BEGIN
         o.user_id,
         oi.product_id,
         i.product_name,
-		i.list_price,
+		i.standard_cost,
         oi.quantity,
-		(i.list_price*oi.quantity) AS total_list_price,
+		(i.standard_cost*oi.quantity) AS total_list_price,
         oi.warehouse_id
     FROM
         orders o
