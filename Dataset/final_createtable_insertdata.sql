@@ -1,3 +1,4 @@
+
 -------------------------User Functions----------------------
 -- Function to register an account
 CREATE OR REPLACE FUNCTION register_account(in_username VARCHAR(50), in_password VARCHAR(50), in_email VARCHAR(150), in_phone_number VARCHAR(20))
@@ -550,29 +551,3 @@ BEGIN
         RETURN 1; -- Success
     ELSE
         RETURN 0; -- Failed (Product or warehouse not found)
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-
--- Admin Function to remove an item from warehouse
-CREATE OR REPLACE FUNCTION admin_remove_item_from_warehouse(in_product_name VARCHAR(100), in_warehouse_name VARCHAR(50))
-RETURNS INTEGER AS $$
-DECLARE
-    product_id INT;
-    warehouse_id INT;
-BEGIN
-    SELECT product_id INTO product_id FROM item WHERE product_name = in_product_name;
-    SELECT warehouse_id INTO warehouse_id FROM warehouse WHERE warehouse_name = in_warehouse_name;
-
-    IF product_id IS NOT NULL AND warehouse_id IS NOT NULL THEN
-        -- Remove one item from inventory in the specified warehouse
-        DELETE FROM inventory
-        WHERE warehouse_id = warehouse_id AND product_id = product_id;
-        
-        RETURN 1; -- Success
-    ELSE
-        RETURN 0; -- Failed (Product or warehouse not found)
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-

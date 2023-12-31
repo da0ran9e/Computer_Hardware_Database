@@ -59,6 +59,7 @@ $$ LANGUAGE plpgsql;
 --DROP FUNCTION change_password(character varying,character varying, character varying)
 -- Function to change password
 CREATE OR REPLACE FUNCTION change_password(in_email VARCHAR(150), in_old_password VARCHAR(50), in_new_password VARCHAR(50))
+
 RETURNS INTEGER AS $$
 DECLARE
     user_exists INTEGER;
@@ -89,6 +90,7 @@ AS $$
 BEGIN
     RETURN QUERY SELECT
         i.product_id, i.product_name, ci.quantity, i.standard_cost, ci.quantity*i.standard_cost AS total_list_price
+
     FROM
         account a
     JOIN
@@ -98,6 +100,7 @@ BEGIN
     JOIN
         item i ON ci.product_id = i.product_id
     WHERE
+
         a.email = in_email;
 END;
 $$ LANGUAGE plpgsql;
@@ -189,7 +192,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 --SELECT create_order('user4@gmail.com');
-
 
 -- Function to add an item to order and delete from cart
 CREATE OR REPLACE FUNCTION add_item_to_order(in_product_id INT, in_order_id INT, in_warehouse_id INT)

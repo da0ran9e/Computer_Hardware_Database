@@ -1,3 +1,4 @@
+
 -- Function to get the first 10 items list for UI
 CREATE OR REPLACE FUNCTION get_first_10_items()
 RETURNS TABLE (
