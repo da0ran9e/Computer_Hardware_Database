@@ -83,11 +83,11 @@ $$ LANGUAGE plpgsql;
 --DROP FUNCTION IF EXISTS get_user_cart(character varying)
 -- Function to get cart of a user
 CREATE OR REPLACE FUNCTION get_user_cart(in_email VARCHAR(150))
-RETURNS TABLE (product_id INT, product_name VARCHAR(100), quantity INT, list_price NUMERIC(6,2), total_list_price NUMERIC(12,2))
+RETURNS TABLE (product_id INT, product_name VARCHAR(100), quantity INT, standard_cost NUMERIC(6,2), total_list_price NUMERIC(12,2))
 AS $$
 BEGIN
     RETURN QUERY SELECT
-        i.product_id, i.product_name, ci.quantity, i.list_price, ci.quantity*i.list_price AS total_list_price
+        i.product_id, i.product_name, ci.quantity, i.standard_cost, ci.quantity*i.standard_cost AS total_list_price
     FROM
         account a
     JOIN
@@ -126,7 +126,7 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT add_item_to_cart(243, 'user3@gmail.com'); 
+--SELECT add_item_to_cart(211, 'user3@gmail.com'); 
 
 --DROP FUNCTION IF EXISTS remove_item_from_cart(int, character varying)
 -- Function to remove an item from cart
@@ -238,7 +238,7 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
--- SELECT add_item_to_order(243, 2, 9) AS result;
+-- SELECT add_item_to_order(211, 2, 9) AS result;
 
 
 -- Function to remove an item from order by one
@@ -285,7 +285,7 @@ RETURNS TABLE (
     user_id INT,
     product_id INT,
     product_name VARCHAR(100),
-	list_price NUMERIC(6,2),
+	standard_cost NUMERIC(6,2),
     quantity INT,
 	total_list_price NUMERIC(12,2),
     warehouse_id INT
@@ -303,9 +303,9 @@ BEGIN
         o.user_id,
         oi.product_id,
         i.product_name,
-		i.list_price,
+		i.standard_cost,
         oi.quantity,
-		(i.list_price*oi.quantity) AS total_list_price,
+		(i.standard_cost*oi.quantity) AS total_list_price,
         oi.warehouse_id
     FROM
         orders o
