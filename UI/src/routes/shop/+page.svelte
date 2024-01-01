@@ -5,8 +5,6 @@
 	// load() -> return data
 	export let data;
 
-	console.log(data);
-
 	let selectedCategories = []
 	// $: console.log(selectedCategories)
 	// Testing
@@ -125,18 +123,21 @@
 	<!-- ./products -->
 <div class="grid md:grid-cols-4 grid-cols-2 gap-6">
 	{#each data.items as product (product.product_id)}
-	<div class="card card-compact shadow-md rounded">
-		<figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
-		<div class="card-body">
-			<a href="" class="card-title uppercase hover:text-primary transition">
-				{product.product_name}
-			</a>
-			<div class="md:flex space-x-2 items-baseline justify-end">
-				<p class="text-xl grow-0 text-primary font-semibold">${product.standard_cost}</p>
-				<p class="text-sm grow-0 text-gray-400 line-through">${product.list_price}</p>
-			</div>
+	<div class="card card-compact shadow-md rounded group">
+		<a href={`/product/${product.product_id}`} class="h-full flex flex-col">
+			<figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+			<div class="card-body flex justify-between">
+				<h4 class="card-title uppercase group-hover:text-primary transition">
+					{product.product_name}
+				</h4>
+				<div class="md:flex space-x-2 items-baseline justify-end">
+					<p class="text-xl grow-0 text-primary font-semibold">${product.standard_cost}</p>
+					<p class="text-sm grow-0 text-gray-400 line-through">${product.list_price}</p>
+				</div>
+			</div>	
+		</a>
 
-		</div>
+
 		<button class="block w-full py-2 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">Add
 			to cart</button>
 	</div>
