@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wishlist - Ecommerce Tailwind</title>
+    <title>Cart</title>
 
     <link rel="shortcut icon" href="../assets/images/favicon/favicon.ico" type="image/x-icon">
 
@@ -78,34 +78,6 @@
                 </span>
                 <span class="capitalize ml-2 text-white">All Categories</span>
 
-                <!-- dropdown -->
-                <div
-                    class="absolute w-full left-0 top-full bg-white shadow-md py-3 divide-y divide-gray-300 divide-dashed opacity-0 group-hover:opacity-100 transition duration-300 invisible group-hover:visible">
-                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-100 transition">
-                        <img src="../assets/images/icons/sofa.svg" alt="sofa" class="w-5 h-5 object-contain">
-                        <span class="ml-6 text-gray-600 text-sm">Sofa</span>
-                    </a>
-                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-100 transition">
-                        <img src="../assets/images/icons/terrace.svg" alt="terrace" class="w-5 h-5 object-contain">
-                        <span class="ml-6 text-gray-600 text-sm">Terarce</span>
-                    </a>
-                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-100 transition">
-                        <img src="../assets/images/icons/bed.svg" alt="bed" class="w-5 h-5 object-contain">
-                        <span class="ml-6 text-gray-600 text-sm">Bed</span>
-                    </a>
-                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-100 transition">
-                        <img src="../assets/images/icons/office.svg" alt="office" class="w-5 h-5 object-contain">
-                        <span class="ml-6 text-gray-600 text-sm">office</span>
-                    </a>
-                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-100 transition">
-                        <img src="../assets/images/icons/outdoor-cafe.svg" alt="outdoor" class="w-5 h-5 object-contain">
-                        <span class="ml-6 text-gray-600 text-sm">Outdoor</span>
-                    </a>
-                    <a href="#" class="flex items-center px-6 py-3 hover:bg-gray-100 transition">
-                        <img src="../assets/images/icons/bed-2.svg" alt="Mattress" class="w-5 h-5 object-contain">
-                        <span class="ml-6 text-gray-600 text-sm">Mattress</span>
-                    </a>
-                </div>
             </div>
 
             <div class="flex items-center justify-between flex-grow pl-12">
@@ -145,7 +117,7 @@
                 </div>
                 <div class="flex-grow">
                     <p class="text-gray-600">Hello,</p>
-                    <h4 class="text-gray-800 font-medium">John Doe</h4>
+                    <h4 class="text-gray-800 font-medium">Username</h4>
                 </div>
             </div>
 
@@ -222,24 +194,18 @@
 
         <!-- wishlist -->
         <div class="col-span-9 space-y-4">
-            <div class="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
-                <div class="w-28">
-                    <img src="../assets/images/products/product6.jpg" alt="product 6" class="w-full">
-                </div>
+            <div class="flex items-center bg-gray-500 justify-between border gap-6 p-4 border-gray-200">
                 <div class="w-1/3">
-                    <h2 class="text-gray-800 text-xl font-medium uppercase">Italian L shape</h2>
-                    <p class="text-gray-500 text-sm">Availability: <span class="text-green-600">In Stock</span></p>
+                    <h2 class="text-gray-800 text-xl font-medium uppercase">Total: </h2>
                 </div>
                 <div class="text-primary text-lg font-semibold">$320.00</div>
-                <a href="#"
-                    class="px-6 py-2 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium">add
-                    to cart</a>
 
                 <div class="text-gray-600 cursor-pointer hover:text-primary">
                     <i class="fa-solid fa-trash"></i>
                 </div>
+                <a href="#"
+                    class=" px-6 py-2 text-center text-sm text-white bg-red-400 border border-red-400 rounded transition uppercase font-roboto font-medium">Check out</a>
             </div>
-
             <div class="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
                 <div class="w-28">
                     <img src="../assets/images/products/product5.jpg" alt="product 6" class="w-full">
@@ -249,9 +215,11 @@
                     <p class="text-gray-500 text-sm">Availability: <span class="text-green-600">In Stock</span></p>
                 </div>
                 <div class="text-primary text-lg font-semibold">$320.00</div>
-                <a href="#"
-                    class="px-6 py-2 text-center text-sm text-white bg-primary border border-primary rounded hover:bg-transparent hover:text-primary transition uppercase font-roboto font-medium">add
-                    to cart</a>
+                <div class="flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max">
+                    <div class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">-</div>
+                    <div class="h-8 w-8 text-base flex items-center justify-center">4</div>
+                    <div class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">+</div>
+                </div>
 
                 <div class="text-gray-600 cursor-pointer hover:text-primary">
                     <i class="fa-solid fa-trash"></i>
@@ -260,21 +228,25 @@
 
             <div class="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
                 <div class="w-28">
-                    <img src="../assets/images/products/product10.jpg" alt="product 6" class="w-full">
+                    <img src="../assets/images/products/product1.jpg" alt="product 6" class="w-full">
                 </div>
                 <div class="w-1/3">
                     <h2 class="text-gray-800 text-xl font-medium uppercase">Sofa</h2>
                     <p class="text-gray-500 text-sm">Availability: <span class="text-red-600">Out of Stock</span></p>
                 </div>
                 <div class="text-primary text-lg font-semibold">$320.00</div>
-                <a href="#"
-                    class="cursor-not-allowed px-6 py-2 text-center text-sm text-white bg-red-400 border border-red-400 rounded transition uppercase font-roboto font-medium">add
-                    to cart</a>
+                <div class="flex border border-gray-300 text-gray-600 divide-x divide-gray-300 w-max">
+                    <div class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">-</div>
+                    <div class="h-8 w-8 text-base flex items-center justify-center">1</div>
+                    <div class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">+</div>
+                </div>
 
                 <div class="text-gray-600 cursor-pointer hover:text-primary">
                     <i class="fa-solid fa-trash"></i>
                 </div>
             </div>
+
+            
         </div>
         <!-- ./wishlist -->
 
