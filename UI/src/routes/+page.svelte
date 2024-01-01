@@ -1,8 +1,3 @@
-<script lang='ts'>
-	import { tryDB } from '$lib/db.ts';
-</script>
-
-
 <!-- banner -->
 <div class="bg-cover bg-no-repeat bg-center py-28 banner">
 	<div class="container mx-auto">

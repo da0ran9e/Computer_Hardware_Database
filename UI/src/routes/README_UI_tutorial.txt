@@ -1,4 +1,13 @@
-Read More here:
+*** What to edit:
+In each route ('route' means folder https://learn.svelte.dev/tutorial/pages), edit
+
++page.server.ts - to query to database
++page.svelte - to edit the UI/html/CSS
+
+
+
+
+*** Read More here:
 
 - DB:
 https://node-postgres.com

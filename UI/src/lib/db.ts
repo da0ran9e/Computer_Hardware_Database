@@ -10,4 +10,11 @@ const pool = new Pool({
 	port: 5432,
 })
  
-export const getClientDB = async () => await pool.connect();
+export const getClientDB = async () => {
+	try {
+		return await pool.connect()
+	} catch(err) {
+		console.log("Cannot connect to DB???");
+		console.err(err);
+	}
+};
