@@ -90,6 +90,78 @@ END;
 $$ LANGUAGE plpgsql;
 -- SELECT * FROM get_items_by_category('CPU');
 
+-- Function to filter items by country
+CREATE OR REPLACE FUNCTION filter_items_by_country(in_country_id VARCHAR(2))
+RETURNS TABLE (
+    product_id INT,
+    product_name VARCHAR(100),
+    category_name VARCHAR(50),
+    concatenated_description TEXT,
+    standard_cost NUMERIC(6,2),
+    list_price NUMERIC(6,2)
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        i.product_id,
+        i.product_name,
+        c.category_name,
+        CONCAT(i.description, ' ', i.description_1, ' ', i.description_2, ' ', i.description_3, ' ', i.description_4) AS concatenated_description,
+        i.standard_cost,
+        i.list_price
+    FROM
+        item i
+    INNER JOIN
+        category c ON i.category_id = c.category_id
+    INNER JOIN
+        inventory inv ON i.product_id = inv.product_id
+    INNER JOIN
+        warehouse w ON inv.warehouse_id = w.warehouse_id
+    INNER JOIN
+        location l ON w.location_id = l.location_id
+    WHERE
+        l.country_id = in_country_id;
+END;
+$$ LANGUAGE plpgsql;
+-- SELECT * FROM filter_items_by_country('US');
+
+
+-- Function to filter items by price range
+CREATE OR REPLACE FUNCTION filter_items_by_price_range(
+    in_min_price NUMERIC(6,2),
+    in_max_price NUMERIC(6,2)
+)
+RETURNS TABLE (
+    product_id INT,
+    product_name VARCHAR(100),
+    category_name VARCHAR(50),
+    concatenated_description TEXT,
+    standard_cost NUMERIC(6,2),
+    list_price NUMERIC(6,2)
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        i.product_id,
+        i.product_name,
+        c.category_name,
+        CONCAT(i.description, ' ', i.description_1, ' ', i.description_2, ' ', i.description_3, ' ', i.description_4) AS concatenated_description,
+        i.standard_cost,
+        i.list_price
+    FROM
+        item i
+    INNER JOIN
+        category c ON i.category_id = c.category_id
+    INNER JOIN
+        inventory inv ON i.product_id = inv.product_id
+    WHERE
+        i.standard_cost BETWEEN in_min_price AND in_max_price;
+END;
+$$ LANGUAGE plpgsql;
+-- SELECT * FROM filter_items_by_price_range(10.00, 50.00);
+
 
 --DROP FUNCTION IF EXISTS get_an_item_info(INT)
 -- Function to get information of an item
