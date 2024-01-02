@@ -104,7 +104,7 @@ $$ LANGUAGE plpgsql;
 
 --DROP FUNCTION IF EXISTS add_item_to_cart(int, character varying)
 -- Function to add an item to cart
-CREATE OR REPLACE FUNCTION add_item_to_cart(in_product_id INT, in_email VARCHAR(150))
+CREATE OR REPLACE FUNCTION add_item_to_cart(in_product_id INT, in_quantity INT, in_email VARCHAR(150))
 RETURNS INTEGER AS $$
 DECLARE
     in_user_id INT;
@@ -116,7 +116,7 @@ BEGIN
     IF in_user_id IS NOT NULL AND in_cart_id IS NOT NULL THEN
         -- Add the item to cart_item
         INSERT INTO cart_item (cart_id, product_id, quantity)
-        VALUES (in_cart_id, in_product_id, 1)
+        VALUES (in_cart_id, in_product_id, in_quantity)
         ON CONFLICT (cart_id, product_id)
         DO UPDATE SET quantity = cart_item.quantity + 1;
 
@@ -126,7 +126,7 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT add_item_to_cart(211, 'user3@gmail.com'); 
+--SELECT add_item_to_cart(69, 5, 'user3@gmail.com'); 
 
 --DROP FUNCTION IF EXISTS remove_item_from_cart(int, character varying)
 -- Function to remove an item from cart
