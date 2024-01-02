@@ -14,7 +14,7 @@
 		{#if state == 0}
 			<Login bind:state bind:form />
 		{:else}
-			<Register bind:state />
+			<Register bind:state bind:form />
 		{/if}
 	</div>
 </div>

@@ -1,5 +1,9 @@
 <script lang='ts'>
+	import { goto } from '$app/navigation';
+	import toast from 'svelte-french-toast';
+
 	export let state = 1;
+	export let form;
 </script>
 
 <h2 class="text-2xl uppercase font-medium mb-1">Create an account</h2>
@@ -22,25 +26,28 @@
 		</div> -->
 		<div>
 			<label for="name" class="text-gray-600 mb-2 block">Full Name</label>
-			<input type="text" name="name" id="name"
+			<input type="text" name="username"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
 				placeholder="fulan fulana" required>
 		</div>
 		<div>
 			<label for="email" class="text-gray-600 mb-2 block">Email address</label>
-			<input type="email" name="email" id="email"
+			<input type="email" name="email"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
 				placeholder="youremail.@domain.com" required>
 		</div>
+	{#if form?.registersuccess === false}
+		<p class="mt-2 text-error">Email might be taken.</p>
+	{/if}
 		<div>
 			<label for="phone" class="text-gray-600 mb-2 block">Phone number</label>
-			<input type="phone" name="phone" id="phone"
+			<input type="phone" name="phone"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
 				placeholder="+XXX XXX" required>
 		</div>
 		<div>
 			<label for="password" class="text-gray-600 mb-2 block">Password</label>
-			<input type="password" name="password" id="password"
+			<input type="password" name="password"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
 				placeholder="*******" required>
 		</div>
@@ -80,5 +87,5 @@
 <!-- ./login with -->
 
 <p class="mt-4 text-center text-gray-600">Already have account?
-	<button class="text-primary cursor-pointer" on:click={() => state = 0}>Login now</button>
+	<button class="text-primary cursor-pointer" on:click={() => {state = 0; form = null;}}>Login now</button>
 </p>

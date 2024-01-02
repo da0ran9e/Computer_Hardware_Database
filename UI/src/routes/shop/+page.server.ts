@@ -3,8 +3,6 @@ function build_filter_query(cats, min, max, search) {
 	let item_query = 'SELECT * FROM get_items() WHERE 1=1';
 	let arg_count = 0;
 
-	console.log(cats, min, max);
-
 	if (cats.length > 0) {
 		const idx_list = cats.map(cat => { 
 			item_args.push(cat);

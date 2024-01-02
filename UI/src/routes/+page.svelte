@@ -15,28 +15,28 @@
 </div>
 
 <!-- categories -->
-<div class="container py-16">
+<div class="container py-16 m-auto">
 	<h2 class="text-2xl font-medium text-gray-800 uppercase mb-6">shop by category</h2>
 	<div class="grid grid-cols-3 gap-3">
 		<div class="relative rounded-sm overflow-hidden group cpu-category">
-			<img src={cpuCategory} alt="category 1" class="w-full">
-			<a href="#"
+			<img src={cpuCategory} alt="category 1" class="object-cover h-full">
+			<a href="/shop?selectcat=1"
 				class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition">CPU</a>
 		</div>
 		<div class="relative rounded-sm overflow-hidden group">
-			<img src={videoCardCategory} alt="category 1" class="w-full">
-			<a href="#"
+			<img src={videoCardCategory} alt="category 1" class="object-cover h-full">
+			<a href="/shop?selectcat=2"
 				class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition">Video card</a>
 		</div>
 		<div class="relative rounded-sm overflow-hidden group">
-			<img src={motherBoardCategory} alt="category 1" class="w-full">
-			<a href="#"
+			<img src={motherBoardCategory} alt="category 1" class="object-cover h-full">
+			<a href="/shop?selectcat=4"
 				class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition">Mother board
 			</a>
 		</div>
 		<div class="relative rounded-sm overflow-hidden group">
-			<img src={storageCategory} alt="category 1" class="w-full">
-			<a href="#"
+			<img src={storageCategory} alt="category 1" class="object-cover h-full">
+			<a href="/shop?selectcat=5"
 				class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center text-xl text-white font-roboto font-medium group-hover:bg-opacity-60 transition">Storage</a>
 		</div>
 		
