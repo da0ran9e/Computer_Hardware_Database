@@ -118,7 +118,7 @@ BEGIN
         INSERT INTO cart_item (cart_id, product_id, quantity)
         VALUES (in_cart_id, in_product_id, in_quantity)
         ON CONFLICT (cart_id, product_id)
-        DO UPDATE SET quantity = cart_item.quantity + 1;
+        DO UPDATE SET quantity = cart_item.quantity + in_quantity;
 
         RETURN 1; -- Success
     ELSE
