@@ -31,7 +31,8 @@ $$ LANGUAGE plpgsql;
 -- Function to get the all items
 CREATE OR REPLACE FUNCTION get_items()
 RETURNS TABLE (
-    product_id INT, product_name VARCHAR(100), category_name VARCHAR(50),
+    product_id INT, product_name VARCHAR(100), 
+    category_id INT, category_name VARCHAR(50),
     concatenated_description TEXT, -- each description can be 150 characters
     standard_cost NUMERIC(6,2), list_price NUMERIC(6,2)
 )
@@ -41,6 +42,7 @@ BEGIN
     SELECT
         i.product_id,
         i.product_name,
+        i.category_id,
 		c.category_name,
         CONCAT(i.description, ' ', i.description_1, ' ', i.description_2, ' ', i.description_3, ' ', i.description_4) AS concatenated_description,
         i.standard_cost, i.list_price

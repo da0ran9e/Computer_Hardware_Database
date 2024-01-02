@@ -1,6 +1,7 @@
 
 <script>
 	import "../app.css";
+	import { Toaster } from 'svelte-french-toast';
 
 	import SearchIcon from '$lib/icons/search.svg?component';
 	import HeartIcon from '$lib/icons/heart.svg?component';
@@ -21,7 +22,16 @@
 		}
 	}
 
+
+	function logData(e) {
+		let formData = e.formData;	
+		for (let [name, value] of Array.from(formData.entries())) {
+			if (value === '') formData.delete(name);
+		}
+	}
 </script>
+
+<Toaster />
 
 <!-- header -->
 <header class="shadow-sm bg-white flex items-center justify-between px-16 py-4">
@@ -29,15 +39,16 @@
 			<Logo width="3rem" height="3rem"/>
 		</a>
 
-		<div class="join border border-primary flex justify-between w-2/5">
-			<input type="text" name="search" id="search"
-				class="join-item input max-w-xl min-w-12 focus:outline-none pl-12 hidden md:flex"
+		<form method="GET" action="/shop" on:formdata={logData}
+			class="join border border-primary flex justify-between w-2/5">
+			<input type="text" name="search" id="searchBar"
+				class="join-item input w-full min-w-12 focus:outline-none pl-12 hidden md:flex"
 				placeholder="Search">
 
 			<SearchIcon class="absolute m-3" width="1.5rem" height="1.5rem"/>
 
-			<button class="join-item btn px-8 btn-primary">Search</button>
-		</div>
+			<button type="submit" class="join-item btn px-8 btn-primary">Search</button>
+		</form>
 
 		<div class="flex gap-4">
 			<!-- TODO: -->
@@ -53,11 +64,13 @@
 			<a href="/cart" class="top-icon-button">
 				<div class="indicator">
 					<CartIcon width="1.5rem" height="1.5rem"/>
+					<span class="badge-numbered hidden">8</span>
 				</div>
 				<div class="text-sm leading-3">Cart</div>
 			</a>
 
-			<a on:click={account} class="top-icon-button">
+			<!-- TODO THIS: -->
+			<a href="/login" class="top-icon-button">
 				<div class="indicator px-2">
 					<UserIcon width="1.5rem" height="1.5rem"/>
 				</div>
@@ -98,7 +111,7 @@
 <!-- ./copyright -->
 
 <style lang="postcss">
-	.badge-num {
+	.badge-numbered {
 		@apply badge badge-primary min-w-5 min-h-5 p-1 indicator-item;
 	}
 
