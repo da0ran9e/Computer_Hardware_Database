@@ -104,7 +104,7 @@ $$ LANGUAGE plpgsql;
 
 --DROP FUNCTION IF EXISTS add_item_to_cart(int, character varying)
 -- Function to add an item to cart
-CREATE OR REPLACE FUNCTION add_item_to_cart(in_product_id INT, in_email VARCHAR(150))
+CREATE OR REPLACE FUNCTION add_item_to_cart(in_product_id INT, in_quantity INT, in_email VARCHAR(150))
 RETURNS INTEGER AS $$
 DECLARE
     in_user_id INT;
@@ -116,9 +116,9 @@ BEGIN
     IF in_user_id IS NOT NULL AND in_cart_id IS NOT NULL THEN
         -- Add the item to cart_item
         INSERT INTO cart_item (cart_id, product_id, quantity)
-        VALUES (in_cart_id, in_product_id, 1)
+        VALUES (in_cart_id, in_product_id, in_quantity)
         ON CONFLICT (cart_id, product_id)
-        DO UPDATE SET quantity = cart_item.quantity + 1;
+        DO UPDATE SET quantity = cart_item.quantity + in_quantity;
 
         RETURN 1; -- Success
     ELSE
@@ -126,42 +126,31 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT add_item_to_cart(211, 'user3@gmail.com'); 
+--SELECT add_item_to_cart(69, 5, 'user3@gmail.com'); 
 
---DROP FUNCTION IF EXISTS remove_item_from_cart(int, character varying)
--- Function to remove an item from cart
-CREATE OR REPLACE FUNCTION remove_item_from_cart(in_product_id INT, in_email VARCHAR(150))
+
+-- Function to update the quantity of an item in cart
+CREATE OR REPLACE FUNCTION update_cart_item_quantity(in_cart_id INT, in_product_id INT, in_new_quantity INT)
 RETURNS INTEGER AS $$
-DECLARE
-    in_user_id INT;
-    in_cart_id INT;
 BEGIN
-    SELECT user_id INTO in_user_id FROM account WHERE email = in_email;
-    SELECT cart_id INTO in_cart_id FROM cart WHERE user_id = in_user_id;
+    UPDATE cart_item
+    SET quantity = GREATEST(in_new_quantity, 0)
+    WHERE cart_id = in_cart_id AND product_id = in_product_id;
 
-    IF in_cart_id IS NOT NULL AND in_product_id IS NOT NULL THEN
-        -- Remove one item from cart_item
-        UPDATE cart_item
-        SET quantity = GREATEST(quantity - 1, 0)
+    -- Check if the quantity became zero, and delete the entry if so
+    IF in_new_quantity = 0 THEN
+        DELETE FROM cart_item
         WHERE cart_id = in_cart_id AND product_id = in_product_id;
-
-        -- Check if the quantity became zero, and delete the entry if so
-        IF (
-            SELECT quantity
-            FROM cart_item
-            WHERE cart_id = in_cart_id AND product_id = in_product_id
-        ) = 0 THEN
-            DELETE FROM cart_item
-            WHERE cart_id = in_cart_id AND product_id = in_product_id;
-        END IF;
-
-        RETURN 1; -- Success
-    ELSE
-        RETURN 0; -- Failed (User or product not found)
     END IF;
+
+    RETURN 1; -- Success
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN 0; -- Failed
 END;
 $$ LANGUAGE plpgsql;
---SELECT remove_item_from_cart(211, 'user3@gmail.com'); 
+--SELECT update_cart_item_quantity(3, 211, 3) AS result;
+
 
 --DROP FUNCTION IF EXISTS create_order(character varying)
 -- Function to create an order
@@ -241,36 +230,28 @@ $$ LANGUAGE plpgsql;
 -- SELECT add_item_to_order(211, 2, 9) AS result;
 
 
--- Function to remove an item from order by one
-CREATE OR REPLACE FUNCTION remove_item_from_order(in_product_id INT, in_order_id INT)
+-- Function to update quantity of an item in order 
+CREATE OR REPLACE FUNCTION update_order_item_quantity(in_order_id INT, in_product_id INT, in_new_quantity INT)
 RETURNS INTEGER AS $$
-DECLARE
-    existing_quantity INT;
 BEGIN
-    -- Check if the item is in the order_item
-    SELECT quantity INTO existing_quantity
-    FROM order_item
+    UPDATE order_item
+    SET quantity = GREATEST(in_new_quantity, 0)
     WHERE order_id = in_order_id AND product_id = in_product_id;
 
-    IF existing_quantity IS NOT NULL THEN
-        -- Subtract the quantity by 1
-        UPDATE order_item
-        SET quantity = GREATEST(existing_quantity - 1, 0)
+    -- Check if the quantity became zero, and delete the entry if so
+    IF in_new_quantity = 0 THEN
+        DELETE FROM order_item
         WHERE order_id = in_order_id AND product_id = in_product_id;
-
-        -- If quantity becomes zero, delete the item from order_item
-        IF existing_quantity - 1 = 0 THEN
-            DELETE FROM order_item
-            WHERE order_id = in_order_id AND product_id = in_product_id;
-        END IF;
-
-        RETURN 1; -- Success
-    ELSE
-        RETURN 0; -- Failed (Product not found in order_item)
     END IF;
+
+    RETURN 1; -- Success
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN 0; -- Failed
 END;
 $$ LANGUAGE plpgsql;
--- SELECT remove_item_from_order(211, 2) AS result;
+-- SELECT update_order_item_quantity(2, 211, 3) AS result;
+
 
 --DROP FUNCTION IF EXISTS get_order_info(INT)
 -- Function to get information about an order including order_items
