@@ -5,8 +5,15 @@
 	const product = data.info;
 
 	let selectedWarehouse;
-</script>
 
+	let count = 0;
+	function increase(){
+		count +=1;
+	}
+	function decrease(){
+		count===0 ? 0:count-=1;
+	}
+</script>
 
 <!-- product-detail -->
 <div class="container grid grid-cols-2 gap-6 mx-auto p-8">
@@ -47,15 +54,16 @@
 			<p>{product.description_3}</p>
 			<p>{product.description_4}</p>
 		</div>
-
+		
 		<div>
 			<h3 class="text-sm font-semibold uppercase mb-1">Quantity:</h3>
 			<div class="flex border border-gray-300 divide-x divide-gray-300 w-max">
-				<div class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">-</div>
-				<div class="h-8 w-8 text-base flex items-center justify-center">4</div>
-				<div class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">+</div>
+				<div on:click={decrease} class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">-</div>
+				<div class="h-8 w-8 text-base flex items-center justify-center">{count}</div>
+				<div on:click={increase} class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">+</div>
 			</div>
 		</div>
+		
 
 		<div>
 			<h3 class="text-sm font-semibold uppercase mb-1">Shop: </h3>
@@ -90,21 +98,6 @@
 				<i class="fa-solid fa-heart"></i> Wishlist
 			</a>
 		</div>
-
-<!-- 		<div class="flex gap-3 mt-4">
-			<a href="#"
-				class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center">
-				<i class="fa-brands fa-facebook-f"></i>
-			</a>
-			<a href="#"
-				class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center">
-				<i class="fa-brands fa-twitter"></i>
-			</a>
-			<a href="#"
-				class="text-gray-400 hover:text-gray-500 h-8 w-8 rounded-full border border-gray-300 flex items-center justify-center">
-				<i class="fa-brands fa-instagram"></i>
-			</a>
-		</div> -->
 	</div>
 </div>
 <!-- ./product-detail -->
