@@ -1,3 +1,5 @@
+import { redirect } from '@sveltejs/kit';
+
 export async function load({ locals, params }) {
 	// Querying: https://node-postgres.com/features/pooling
 	const prodID = params.productID;	// [productID]
@@ -15,12 +17,19 @@ export async function load({ locals, params }) {
 }
 
 export const actions = {
-	add_to_cart: async ({ request, locals }) => {
+	default: async ({ request, locals }) => {
 		console.log("Add To Cart...");
 		const form = await request.formData();
 		const email = form.get('email');
 		const quantity = form.get('quantity');
 		const productID = form.get('productID');
+
+		if (!email) {
+			console.log("MOVE");
+			redirect(302, '/login');
+		}
+
+		// console.log('SELECT add_item_to_cart($1, $2, $3);', [productID, quantity, email], form);
 
 		try {
 			const res_login = await locals.client.query('SELECT add_item_to_cart($1, $2, $3);', [productID, quantity, email]);

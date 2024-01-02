@@ -12,16 +12,6 @@
 
 	import paymentImg from '$lib/assets/methods.png';
 
-	let username = 'an';
-
-	function account(){
-		if (username === 'Login'){
-			window.location.href ='/login'
-		} else {
-			window.location.href ='/profile/'// +username
-		}
-	}
-
 	// +layout.server.ts
 	export let data;
 
