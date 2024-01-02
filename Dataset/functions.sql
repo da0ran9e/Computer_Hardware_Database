@@ -59,7 +59,6 @@ $$ LANGUAGE plpgsql;
 --DROP FUNCTION change_password(character varying,character varying, character varying)
 -- Function to change password
 CREATE OR REPLACE FUNCTION change_password(in_email VARCHAR(150), in_old_password VARCHAR(50), in_new_password VARCHAR(50))
-
 RETURNS INTEGER AS $$
 DECLARE
     user_exists INTEGER;
@@ -90,7 +89,6 @@ AS $$
 BEGIN
     RETURN QUERY SELECT
         i.product_id, i.product_name, ci.quantity, i.standard_cost, ci.quantity*i.standard_cost AS total_list_price
-
     FROM
         account a
     JOIN
@@ -100,7 +98,6 @@ BEGIN
     JOIN
         item i ON ci.product_id = i.product_id
     WHERE
-
         a.email = in_email;
 END;
 $$ LANGUAGE plpgsql;
@@ -192,6 +189,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 --SELECT create_order('user4@gmail.com');
+
 
 -- Function to add an item to order and delete from cart
 CREATE OR REPLACE FUNCTION add_item_to_order(in_product_id INT, in_order_id INT, in_warehouse_id INT)
@@ -390,6 +388,39 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 --SELECT * FROM get_items();
+
+-- Function to filter by category
+CREATE OR REPLACE FUNCTION get_items_by_category(in_category_name VARCHAR(50))
+RETURNS TABLE (
+    product_id INT,
+    product_name VARCHAR(100),
+    category_name VARCHAR(50),
+    concatenated_description TEXT,
+    standard_cost NUMERIC(6,2),
+    list_price NUMERIC(6,2)
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        i.product_id,
+        i.product_name,
+        c.category_name,
+        CONCAT(i.description, ' ', i.description_1, ' ', i.description_2, ' ', i.description_3, ' ', i.description_4) AS concatenated_description,
+        i.standard_cost,
+        i.list_price
+    FROM
+        item i
+    INNER JOIN
+        category c ON i.category_id = c.category_id
+    WHERE
+        c.category_name = in_category_name
+    ORDER BY
+        i.product_id;
+END;
+$$ LANGUAGE plpgsql;
+-- SELECT * FROM get_items_by_category('CPU');
+
 
 --DROP FUNCTION IF EXISTS get_an_item_info(INT)
 -- Function to get information of an item

@@ -128,3 +128,11 @@ CREATE TABLE order_item
 -- DROP CONSTRAINT IF EXISTS FK_order_item_order_id,  -- Drop the existing foreign key constraint if it exists
 -- ADD CONSTRAINT FK_order_item_order_id
 -- FOREIGN KEY (order_id) REFERENCES orders(order_id) ON DELETE CASCADE;
+
+CREATE TABLE admin
+(
+	username VARCHAR(50) PRIMARY KEY,
+	pass VARCHAR(50)
+);
+--INSERT INTO admin (username, pass) VALUES ('admin1', 'password1');
+
