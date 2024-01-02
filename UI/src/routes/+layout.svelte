@@ -22,6 +22,8 @@
 		}
 	}
 
+	// +layout.server.ts
+	export let data;
 
 	function logData(e) {
 		let formData = e.formData;	
@@ -34,13 +36,13 @@
 <Toaster />
 
 <!-- header -->
-<header class="shadow-sm bg-white flex items-center justify-between px-16 py-4">
-		<a href="/" class="px-2">
+<header class="shadow-sm bg-white flex items-center justify-between px-16">
+		<a href="/" class="px-2 p-4">
 			<Logo width="3rem" height="3rem"/>
 		</a>
 
 		<form method="GET" action="/shop" on:formdata={logData}
-			class="join border border-primary flex justify-between w-2/5">
+			class="join border border-primary flex justify-between w-2/5 ">
 			<input type="text" name="search" id="searchBar"
 				class="join-item input w-full min-w-12 focus:outline-none pl-12 hidden md:flex"
 				placeholder="Search">
@@ -50,7 +52,7 @@
 			<button type="submit" class="join-item btn px-8 btn-primary">Search</button>
 		</form>
 
-		<div class="flex gap-4">
+		<div class="flex items-center gap-4">
 			<!-- TODO: -->
 <!-- 			<a href="/wishlist" class="text-center text-gray-700 hover:text-primary transition relative">
 				<div class="indicator">
@@ -60,22 +62,32 @@
 				<div class="text-sm">Wishlist</div>
 			</a> -->
 
-			<!-- TODO: -->
-			<a href="/cart" class="top-icon-button">
-				<div class="indicator">
-					<CartIcon width="1.5rem" height="1.5rem"/>
-					<span class="badge-numbered hidden">8</span>
-				</div>
-				<div class="text-sm leading-3">Cart</div>
-			</a>
-
 			<!-- TODO THIS: -->
-			<a href="/login" class="top-icon-button">
-				<div class="indicator px-2">
-					<UserIcon width="1.5rem" height="1.5rem"/>
-				</div>
-				<div class="text-sm leading-3">{username}</div>
-			</a>
+			{#if data.user}
+				<a href="/cart" class="top-icon-button">
+					<div class="indicator">
+						<CartIcon width="1.5rem" height="1.5rem"/>
+						{#if data.user.cartcount > 0}
+							<span class="badge-numbered">{data.user.cartcount}</span>
+						{/if}
+					</div>
+					<div class="text-sm leading-3">Cart</div>
+				</a>
+
+				<a href="/profile" class="top-icon-button">
+					<div class="indicator px-2">
+						<UserIcon width="1.5rem" height="1.5rem"/>
+					</div>
+					<div class="text-sm leading-3">{data.user.name}</div>
+				</a>
+			{:else}
+				<a href="/login" class="btn btn-primary pl-1">
+					<div class="indicator px-2 invert">
+						<UserIcon width="1.5rem" height="1.5rem"/>
+					</div>
+					<div class="text-sm leading-3">Login</div>
+				</a>
+			{/if}
 		</div>
 </header>
 
