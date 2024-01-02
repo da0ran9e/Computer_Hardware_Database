@@ -1,7 +1,6 @@
-
-
 <script>
 	export let count = 1;
+	export let disabled = false;
 	function increase(){
 		count +=1;
 	}
@@ -11,9 +10,13 @@
 </script>
 
 <div class="flex border border-primary divide-x divide-gray-300 w-max">
-	<button class="square text-xl cursor-pointer select-none" on:click={decrease} >-</button>
+	{#if !disabled}
+		<button class="square text-xl cursor-pointer select-none" on:click={decrease} >-</button>
+	{/if}
 	<div class="square text-base">{count}</div>
-	<button class="square text-xl cursor-pointer select-none" on:click={increase} >+</button>
+	{#if !disabled}
+		<button class="square text-xl cursor-pointer select-none" on:click={increase}>+</button>
+	{/if}
 </div>
 
 <style lang='postcss'>

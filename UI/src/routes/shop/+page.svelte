@@ -1,5 +1,6 @@
 <script lang='ts'>
 	import SidebarFilter from './SidebarFilter.svelte';
+	import { enhance } from '$app/forms';
 
 	// Connect to +page.server.ts
 	// load() -> return data
@@ -18,7 +19,18 @@
 			allItems = data.items;
 		}
 	}
+
+	// Add to cart part
+	$: maildata = data?.user?.info.email;
+	$: usermail = maildata ? maildata : '';
+	let addCartProduct;
 </script>
+
+<form id="add2cart" method="POST" use:enhance>
+	<input type="hidden" name="email" value={usermail} />
+	<input type="hidden" name="quantity" value="1" />
+	<input type="hidden" name="productID" value={addCartProduct} />
+</form>
 
 		<!-- breadcrumb -->
 		<div class="container py-4 flex items-center gap-3">
@@ -76,8 +88,11 @@
 				</a>
 
 
-				<button class="block w-full py-2 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">Add
-					to cart</button>
+				<button type="submit" form="add2cart"
+					on:click={() => addCartProduct = product.product_id}
+					class="block w-full py-2 text-center text-white bg-primary border border-primary rounded-b hover:bg-transparent hover:text-primary transition">
+					Add to cart
+				</button>
 			</div>
 			{/each}
 		</div> 

@@ -83,11 +83,17 @@ $$ LANGUAGE plpgsql;
 --DROP FUNCTION IF EXISTS get_user_cart(character varying)
 -- Function to get cart of a user
 CREATE OR REPLACE FUNCTION get_user_cart(in_email VARCHAR(150))
-RETURNS TABLE (product_id INT, product_name VARCHAR(100), quantity INT, standard_cost NUMERIC(6,2), total_list_price NUMERIC(12,2))
+RETURNS TABLE (
+    cart_id INT,
+    product_id INT, 
+    product_name VARCHAR(100), 
+    quantity INT, 
+    standard_cost NUMERIC(6,2), 
+    total_list_price NUMERIC(12,2))
 AS $$
 BEGIN
     RETURN QUERY SELECT
-        i.product_id, i.product_name, ci.quantity, i.standard_cost, ci.quantity*i.standard_cost AS total_list_price
+       c.cart_id, i.product_id, i.product_name, ci.quantity, i.standard_cost, ci.quantity*i.standard_cost AS total_list_price
     FROM
         account a
     JOIN

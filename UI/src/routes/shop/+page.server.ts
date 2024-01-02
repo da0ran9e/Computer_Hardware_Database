@@ -58,3 +58,6 @@ export async function load({ locals, url }) {
 }
 
 
+import { actions as cartactions } from '../product/[productID]/+page.server.ts'
+
+export const actions = cartactions;

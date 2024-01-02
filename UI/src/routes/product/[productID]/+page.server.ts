@@ -32,8 +32,8 @@ export const actions = {
 		// console.log('SELECT add_item_to_cart($1, $2, $3);', [productID, quantity, email], form);
 
 		try {
-			const res_login = await locals.client.query('SELECT add_item_to_cart($1, $2, $3);', [productID, quantity, email]);
-			const status = Boolean(res_login.rows[0].add_item_to_cart);
+			const res_prod = await locals.client.query('SELECT add_item_to_cart($1, $2, $3);', [productID, quantity, email]);
+			const status = Boolean(res_prod.rows[0].add_item_to_cart);
 
 			let returnobj = { addcart: status }
 			// Seet cookies here

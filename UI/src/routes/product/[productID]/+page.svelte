@@ -103,7 +103,7 @@
 			{/if}
 		</div>
 
-		<form method="POST" use:enhance
+		<form method="POST" action="?/" use:enhance
 			class="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
 
 			<input type="hidden" name="email" value={usermail} />
