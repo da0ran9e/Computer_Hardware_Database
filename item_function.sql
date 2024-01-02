@@ -56,6 +56,39 @@ END;
 $$ LANGUAGE plpgsql;
 --SELECT * FROM get_items();
 
+-- Function to filter by category
+CREATE OR REPLACE FUNCTION get_items_by_category(in_category_name VARCHAR(50))
+RETURNS TABLE (
+    product_id INT,
+    product_name VARCHAR(100),
+    category_name VARCHAR(50),
+    concatenated_description TEXT,
+    standard_cost NUMERIC(6,2),
+    list_price NUMERIC(6,2)
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        i.product_id,
+        i.product_name,
+        c.category_name,
+        CONCAT(i.description, ' ', i.description_1, ' ', i.description_2, ' ', i.description_3, ' ', i.description_4) AS concatenated_description,
+        i.standard_cost,
+        i.list_price
+    FROM
+        item i
+    INNER JOIN
+        category c ON i.category_id = c.category_id
+    WHERE
+        c.category_name = in_category_name
+    ORDER BY
+        i.product_id;
+END;
+$$ LANGUAGE plpgsql;
+-- SELECT * FROM get_items_by_category('CPU');
+
+
 --DROP FUNCTION IF EXISTS get_an_item_info(INT)
 -- Function to get information of an item
 CREATE OR REPLACE FUNCTION get_an_item_info(in_product_id INT)
