@@ -49,7 +49,7 @@ export const actions = {
 		const status = Boolean(res_register.rows[0].register_account);
 
 		return { registersuccess: status }
-	}
+	},
 
 	logout: async ({ cookies }) => {
 		console.log("Logging out..");
