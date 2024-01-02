@@ -163,6 +163,29 @@ END;
 $$ LANGUAGE plpgsql;
 --SELECT remove_item_from_cart(211, 'user3@gmail.com'); 
 
+-- Function to update the quantity of an item in cart
+CREATE OR REPLACE FUNCTION update_cart_item_quantity(in_cart_id INT, in_product_id INT, in_new_quantity INT)
+RETURNS INTEGER AS $$
+BEGIN
+    UPDATE cart_item
+    SET quantity = GREATEST(in_new_quantity, 0)
+    WHERE cart_id = in_cart_id AND product_id = in_product_id;
+
+    -- Check if the quantity became zero, and delete the entry if so
+    IF in_new_quantity = 0 THEN
+        DELETE FROM cart_item
+        WHERE cart_id = in_cart_id AND product_id = in_product_id;
+    END IF;
+
+    RETURN 1; -- Success
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN 0; -- Failed (Error in the update operation)
+END;
+$$ LANGUAGE plpgsql;
+--SELECT update_cart_item_quantity(3, 211, 3) AS result;
+
+
 --DROP FUNCTION IF EXISTS create_order(character varying)
 -- Function to create an order
 CREATE OR REPLACE FUNCTION create_order(in_email VARCHAR(150))
