@@ -1,6 +1,19 @@
 <script lang='ts'>
+	import toast from 'svelte-french-toast';
+
 	export let state = 0;
 	export let form;
+
+	const regsuccess = form?.registersuccess;
+
+	// on load
+	if (regsuccess !== undefined) {
+		if (regsuccess === true) {
+			toast.success("Registered successfully!");	
+		} else {
+			state = 1;
+		}
+	}
 </script>
 
 <h2 class="text-2xl uppercase font-medium mb-1">Login</h2>
@@ -30,7 +43,7 @@
 		</div>
 		<a href="#" class="text-primary">Forgot password</a>
 	</div> -->
-	{#if form?.success === false}
+	{#if form?.loginsuccess === false}
 		<p class="mt-2 text-error">Wrong email or password.</p>
 	{/if}
 
@@ -54,5 +67,5 @@
 <!-- ./login with -->
 
 <p class="mt-4 text-center text-gray-600">Don't have account?
-	<button class="text-primary" on:click={() => state = 1}>Register now</button>
+	<button class="text-primary" on:click={() => {state = 1; form = null;}}>Register now</button>
 </p>
