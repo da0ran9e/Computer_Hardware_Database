@@ -180,7 +180,7 @@ BEGIN
     RETURN 1; -- Success
 EXCEPTION
     WHEN OTHERS THEN
-        RETURN 0; -- Failed (Error in the update operation)
+        RETURN 0; -- Failed
 END;
 $$ LANGUAGE plpgsql;
 --SELECT update_cart_item_quantity(3, 211, 3) AS result;
