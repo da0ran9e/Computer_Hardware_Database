@@ -3,6 +3,7 @@ export async function load({ locals }) {
 	const res_items = await locals.client.query('SELECT * FROM get_items()');
 	const res_cat = await locals.client.query('SELECT * FROM category');
 
+
 	return { 
 		items: res_items.rows,
 		cat: res_cat.rows

@@ -1,3 +1,4 @@
+
 <script>
 	import "../app.css";
 
@@ -9,6 +10,17 @@
 	import Logo from '$lib/logo.svg?component';
 
 	import paymentImg from '$lib/assets/methods.png';
+
+	let username = 'an';
+
+	function account(){
+		if (username === 'Login'){
+			window.location.href ='/login'
+		} else {
+			window.location.href ='/profile/'// +username
+		}
+	}
+
 </script>
 
 <!-- header -->
@@ -38,19 +50,18 @@
 			</a> -->
 
 			<!-- TODO: -->
-			<a href="/checkout" class="top-icon-button">
+			<a href="/cart" class="top-icon-button">
 				<div class="indicator">
 					<CartIcon width="1.5rem" height="1.5rem"/>
-					<span class="badge-num">9</span>
 				</div>
 				<div class="text-sm leading-3">Cart</div>
 			</a>
 
-			<a href="/profile" class="top-icon-button">
+			<a on:click={account} class="top-icon-button">
 				<div class="indicator px-2">
 					<UserIcon width="1.5rem" height="1.5rem"/>
 				</div>
-				<div class="text-sm leading-3">Account</div>
+				<div class="text-sm leading-3">{username}</div>
 			</a>
 		</div>
 </header>
