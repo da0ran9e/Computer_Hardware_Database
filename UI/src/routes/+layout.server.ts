@@ -9,11 +9,16 @@ export async function load({ locals, cookies }) {
 		return {}
 	}
 
-	// Logged in
-	const res_user = await locals.client.query('SELECT * FROM account WHERE email = $1', [usermail]);
+	// Logged in (no query password)
+	const res_user = 
+		await locals.client.query('SELECT user_id, user_name, email, phone_number FROM account WHERE email = $1', [usermail]);
+		
+	if (!res_user.rows[0]) {
+		return {}
+	}
 	return { 
 		user: {
-			name: res_user.rows[0].user_name,
+			info: res_user.rows[0],
 			cartcount: 1
 		}
 	}
