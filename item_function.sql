@@ -127,6 +127,55 @@ $$ LANGUAGE plpgsql;
 -- SELECT * FROM filter_items_by_country('US');
 
 
+-- Function to filter with optional parameters
+CREATE OR REPLACE FUNCTION filter_items(
+    in_category_name VARCHAR(50) DEFAULT NULL,
+    in_country_id VARCHAR(2) DEFAULT NULL,
+    in_min_price NUMERIC(6,2) DEFAULT NULL,
+    in_max_price NUMERIC(6,2) DEFAULT NULL
+)
+RETURNS TABLE (
+    product_id INT,
+    product_name VARCHAR(100),
+    category_name VARCHAR(50),
+    concatenated_description TEXT,
+    standard_cost NUMERIC(6,2),
+    list_price NUMERIC(6,2)
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        i.product_id,
+        i.product_name,
+        c.category_name,
+        CONCAT(i.description, ' ', i.description_1, ' ', i.description_2, ' ', i.description_3, ' ', i.description_4) AS concatenated_description,
+        i.standard_cost,
+        i.list_price
+    FROM
+        item i
+    JOIN
+        category c ON i.category_id = c.category_id
+    JOIN
+        inventory inv ON i.product_id = inv.product_id
+    JOIN
+        warehouse w ON inv.warehouse_id = w.warehouse_id
+    JOIN
+        location l ON w.location_id = l.location_id
+    WHERE
+        (in_category_name IS NULL OR c.category_name = in_category_name)
+        AND (in_country_id IS NULL OR l.country_id = in_country_id)
+        AND (in_min_price IS NULL OR i.standard_cost >= in_min_price)
+        AND (in_max_price IS NULL OR i.standard_cost <= in_max_price);
+END;
+$$ LANGUAGE plpgsql;
+-- Filter by category name, country, and price range
+--SELECT * FROM filter_items(in_category_name := 'CPU', in_country_id := 'US', in_min_price := 550, in_max_price := 1000);
+-- Filter by category name only
+--SELECT * FROM filter_items(in_category_name := 'Mother Board');
+
+
+
 -- Function to filter items by price range
 CREATE OR REPLACE FUNCTION filter_items_by_price_range(
     in_min_price NUMERIC(6,2),
