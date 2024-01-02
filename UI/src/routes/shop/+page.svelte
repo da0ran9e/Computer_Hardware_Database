@@ -157,7 +157,4 @@
 
 
 <style lang='postcss'>
-	.input-min-max {
-
-	}
 </style>

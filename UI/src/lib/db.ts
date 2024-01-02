@@ -4,9 +4,10 @@ const { Pool } = pg;
 
 const pool = new Pool({
 	user: 'postgres',
-	host: 'localhost',
 	database: 'Hardware',
 	password: 'q12Q!@',
+
+	host: 'localhost',
 	port: 5432,
 })
  
@@ -15,6 +16,6 @@ export const getClientDB = async () => {
 		return await pool.connect()
 	} catch(err) {
 		console.log("Cannot connect to DB???");
-		console.err(err);
+		console.error(err);
 	}
 };
