@@ -13,3 +13,35 @@ export async function load({ locals, params }) {
 		warehouses: res_warehouse.rows
 	};
 }
+
+export const actions = {
+	add_to_cart: async ({ request, locals }) => {
+		console.log("Add To Cart...");
+		const form = await request.formData();
+		const email = form.get('email');
+		const quantity = form.get('quantity');
+		const productID = form.get('productID');
+
+		try {
+			const res_login = await locals.client.query('SELECT add_item_to_cart($1, $2, $3);', [productID, quantity, email]);
+			const status = Boolean(res_login.rows[0].add_item_to_cart);
+
+			let returnobj = { addcart: status }
+			// Seet cookies here
+			if (!status) {
+				returnobj.errmsg = "IDK";
+				// $page.form, return to the "export let form" of +page.svelte
+				console.log("Add item to cart failed.");
+			}
+
+			return returnobj;
+		} catch (err) {
+			console.log(err.message);
+			return { 
+				addcart: false,
+				errmsg: err.message 
+			}
+		}
+
+	},
+}

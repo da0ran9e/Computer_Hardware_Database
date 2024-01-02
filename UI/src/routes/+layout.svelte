@@ -67,8 +67,8 @@
 			<a href="/profile/cart" class="top-icon-button">
 				<div class="indicator">
 					<CartIcon width="1.5rem" height="1.5rem"/>
-					{#if data.user.cartcount > 0}
-						<span class="badge-numbered">{data.user.cartcount}</span>
+					{#if data.user.cart.length > 0}
+						<span class="badge-numbered">{data.user.cart.length}</span>
 					{/if}
 				</div>
 				<div class="text-sm leading-3">Cart</div>

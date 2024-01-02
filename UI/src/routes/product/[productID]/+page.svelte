@@ -1,8 +1,10 @@
 <script lang='ts'>
 	import CartIcon from '$lib/icons/cart.svg?component';
+	import toast from 'svelte-french-toast';
 
 	// Connect to +page.server.ts
 	export let data;
+	// console.log(data);
 
 	const product = data.info;
 
@@ -14,6 +16,26 @@
 	}
 	function decrease(){
 		count===0 ? 0:count-=1;
+	}
+
+
+	// Dealing with add to cart
+	export let form;
+
+	function fillFormData(e) {
+		let formData = e.formData;
+
+		formData.append('email', data.user.info.email);
+		formData.append('quantity', count);
+		formData.append('productID', data.info.product_id);
+	}
+
+	if (form?.addcart === true) {
+		toast.success("Added to cart");	
+	}
+
+	if (form?.errmsg) {
+		toast.error(form.errmsg);
 	}
 </script>
 
@@ -90,16 +112,18 @@
 			{/if}
 		</div>
 
-		<div class="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
-			<a href="#"
+		<form method="POST" action="?/add_to_cart"
+			on:formdata={fillFormData}
+			class="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
+			<button type="submit"
 				class="bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition">
 				<span class="icon cart-icon"></span> Add to cart
-			</a>
+			</button>
 <!-- 			<a href="#"
 				class="border border-gray-300 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition">
 				<i class="fa-solid fa-heart"></i> Wishlist
 			</a> -->
-		</div>
+		</form>
 	</div>
 </div>
 <!-- ./product-detail -->
