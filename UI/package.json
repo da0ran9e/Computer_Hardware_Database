@@ -29,6 +29,7 @@
 	"type": "module",
 	"dependencies": {
 		"@types/pg": "^8.10.9",
-		"pg": "^8.11.3"
+		"pg": "^8.11.3",
+		"svelte-french-toast": "^1.2.0"
 	}
 }
