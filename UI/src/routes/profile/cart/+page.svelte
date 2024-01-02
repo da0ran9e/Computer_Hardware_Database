@@ -1,4 +1,6 @@
-
+<script>
+	import productImg from '$lib/assets/images/products/product5.jpg';
+</script>
 <!-- wishlist -->
 <div class="col-span-9 space-y-4">
 	<div class="flex items-center bg-gray-500 justify-between border gap-6 p-4 border-gray-200">
@@ -17,7 +19,7 @@
 	</div>
 	<div class="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
 		<div class="w-28">
-			<img src="../assets/images/products/product5.jpg" alt="product 6" class="w-full">
+			<img src={productImg} alt="product 6" class="w-full">
 		</div>
 		<div class="w-1/3">
 			<h2 class="text-gray-800 text-xl font-medium uppercase">Dining Table</h2>
@@ -37,7 +39,7 @@
 
 	<div class="flex items-center justify-between border gap-6 p-4 border-gray-200 rounded">
 		<div class="w-28">
-			<img src="../assets/images/products/product1.jpg" alt="product 6" class="w-full">
+			<img src={productImg} alt="product 6" class="w-full">
 		</div>
 		<div class="w-1/3">
 			<h2 class="text-gray-800 text-xl font-medium uppercase">Sofa</h2>

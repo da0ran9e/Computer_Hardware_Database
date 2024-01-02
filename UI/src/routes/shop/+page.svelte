@@ -5,9 +5,19 @@
 	// load() -> return data
 	export let data;
 
-
+	$: allItems = data.items;
 	// $: console.log(selectedCategories)
 	// Testing
+
+	function sortProducts(e) {
+		if (e.target.value == "price-low-to-high") {
+			allItems = data.items.sort((a, b) => a.standard_cost - b.standard_cost);
+		} else if (e.target.value == "price-high-to-low") {
+			allItems = data.items.sort((a, b) => b.standard_cost - a.standard_cost);
+		} else {
+			allItems = data.items;
+		}
+	}
 </script>
 
 		<!-- breadcrumb -->
@@ -30,7 +40,7 @@
 	<!-- products -->
 	<div class="col-span-3">
 		<div class="flex items-center mb-4">
-			<select name="sort" id="sort"
+			<select name="sort" id="sort" on:change={sortProducts}
 				class="w-44 text-sm text-gray-600 py-3 px-4 border-gray-300 shadow-sm rounded focus:ring-primary focus:border-primary">
 				<option value="">Default sorting</option>
 				<option value="price-low-to-high">Price low to high</option>
@@ -50,7 +60,7 @@
 		</div>
 		<!-- ./products -->
 		<div class="grid md:grid-cols-4 grid-cols-2 gap-6">
-			{#each data.items as product (product.product_id)}
+			{#each allItems as product (product.product_id)}
 			<div class="card card-compact shadow-md rounded group">
 				<a href={`/product/${product.product_id}`} class="h-full flex flex-col">
 					<figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
