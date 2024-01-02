@@ -1,4 +1,4 @@
-function build_filter_query(cats, min, max) {
+function build_filter_query(cats, min, max, search) {
 	const item_args = [];
 	let item_query = 'SELECT * FROM get_items() WHERE 1=1';
 	let arg_count = 0;
@@ -13,6 +13,12 @@ function build_filter_query(cats, min, max) {
 		});
 
 		item_query += ' AND category_id IN (' + idx_list.join(',') + ')';
+	}
+
+	if (search) {
+		arg_count += 1;
+		item_query += ' AND product_name ~* $' + arg_count;
+		item_args.push(search);		
 	}
 
 	if (min) {
@@ -38,7 +44,8 @@ export async function load({ locals, url }) {
 	const res = build_filter_query(
 		url.searchParams.getAll('selectcat'),
 		url.searchParams.get('min'),
-		url.searchParams.get('max')
+		url.searchParams.get('max'),
+		url.searchParams.get('search')
 	);
 
 	console.log('"',res.query, '"', res.args);

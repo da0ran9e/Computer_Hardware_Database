@@ -8,7 +8,7 @@
 </p>
 <form method="post" action="?/register" autocomplete="off">
 	<div class="space-y-2">
-		<div class="grid grid-cols-2 gap-4">
+<!-- 		<div class="grid grid-cols-2 gap-4">
 			<div>
 				<label for="first-name" class="text-gray-600">First Name <span
 						class="text-primary">*</span></label>
@@ -19,37 +19,37 @@
 						class="text-primary">*</span></label>
 				<input type="text" name="last-name" id="last-name" class="input-box">
 			</div>
-		</div>
+		</div> -->
 		<div>
 			<label for="name" class="text-gray-600 mb-2 block">Full Name</label>
 			<input type="text" name="name" id="name"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
-				placeholder="fulan fulana">
+				placeholder="fulan fulana" required>
 		</div>
 		<div>
 			<label for="email" class="text-gray-600 mb-2 block">Email address</label>
 			<input type="email" name="email" id="email"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
-				placeholder="youremail.@domain.com">
+				placeholder="youremail.@domain.com" required>
 		</div>
 		<div>
 			<label for="phone" class="text-gray-600 mb-2 block">Phone number</label>
 			<input type="phone" name="phone" id="phone"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
-				placeholder="+XXX XXX">
+				placeholder="+XXX XXX" required>
 		</div>
 		<div>
 			<label for="password" class="text-gray-600 mb-2 block">Password</label>
 			<input type="password" name="password" id="password"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
-				placeholder="*******">
+				placeholder="*******" required>
 		</div>
-		<div>
+<!-- 		<div>
 			<label for="confirm" class="text-gray-600 mb-2 block">Confirm password</label>
 			<input type="password" name="confirm" id="confirm"
 				class="block w-full border border-gray-300 px-4 py-3 text-gray-600 text-sm rounded focus:ring-0 focus:border-primary placeholder-gray-400"
-				placeholder="*******">
-		</div>
+				placeholder="*******" required>
+		</div> -->
 	</div>
 	<div class="mt-6">
 		<div class="flex items-center">

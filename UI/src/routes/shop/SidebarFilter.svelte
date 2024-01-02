@@ -1,11 +1,22 @@
 <script lang='ts'>
 	export let allCats = [];
+	import { page } from '$app/stores';
+	import toast from 'svelte-french-toast';
 
-	let selectedCategories = [];
+	const params = $page.url.searchParams;
+	let selectedCategories = params.getAll('selectcat').map(text => parseInt(text, 10));
+	const querymin = parseInt(params.get('min'), 10);
+	const querymax = parseInt(params.get('max'), 10);
+
+	$: console.log(selectedCategories);
 
 	function logData(e) {
 		let formData = e.formData;
-			for (let [name, value] of Array.from(formData.entries())) {
+		toast.success("Searched");
+
+		formData.append('search', document.querySelector('#searchBar').value);
+
+		for (let [name, value] of Array.from(formData.entries())) {
 			if (value === '') formData.delete(name);
 		}
 	}
@@ -39,11 +50,13 @@
 			<div class="mt-4 flex items-center">
 				<input type="number" name="min" id="min" min="0"
 					class="input input-sm w-full input-bordered focus:input-primary rounded"
-					placeholder="min">
+					placeholder="min"
+					value={querymin}>
 				<span class="mx-3 text-gray-500">-</span>
 				<input type="number" name="max" id="max" min="0"
 					class="input input-sm w-full input-bordered focus:input-primary rounded"
-					placeholder="max">
+					placeholder="max"
+					value={querymax}>
 			</div>
 		</div>
 
