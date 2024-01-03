@@ -1,44 +1,49 @@
 <!-- wrapper -->
-<div class="container grid grid-cols-12 items-start pb-16 pt-4 gap-6">
+<div class="container m-auto grid grid-cols-12 items-start pb-48 pt-4 gap-6">
 
-	<div class="col-span-8 border border-gray-200 p-4 rounded">
+	<div class="col-span-8 border border-gray-200 px-8 pt-4 rounded">
 		<h3 class="text-lg font-medium capitalize mb-4">Checkout</h3>
-		<div class="space-y-4">
+		<div class="space-y-4 form-stuffs">
 			<div>
 				<label for="first-name" class="text-gray-600">Full Name <span
-					class="text-primary">*</span></label>
-				<input type="text" name="first-name" id="first-name" class="input-box">
+				class="text-primary">*</span></label>
+				<input type="text" name="first-name" id="first-name" class="input input-bordered">
 			</div>
 			
 			<div>
 				<label for="region" class="text-gray-600">Country/Region</label>
 				<input type="text" name="region" id="region" class="input-box">
 			</div>
+
 			<div>
 				<label for="address" class="text-gray-600">Street address</label>
 				<input type="text" name="address" id="address" class="input-box">
 			</div>
+
 			<div>
 				<label for="city" class="text-gray-600">City</label>
 				<input type="text" name="city" id="city" class="input-box">
 			</div>
+
 			<div>
 				<label for="phone" class="text-gray-600">Phone number<span
 					class="text-primary">*</span></label>
 				<input type="text" name="phone" id="phone" class="input-box">
 			</div>
+
 			<div>
 				<label for="email" class="text-gray-600">Email address<span
 					class="text-primary">*</span></label>
 				<input type="email" name="email" id="email" class="input-box">
 			</div>
+
 			<div>
 				<label for="company" class="text-gray-600">Payment method</label>
 				<select name="method" id="method"
 					class="w-44 text-sm text-gray-600 py-3 px-4 border-gray-300 shadow-sm rounded focus:ring-primary focus:border-primary">
 					<option value="">Cash</option>
-					<option value="price-low-to-high">Debit</option>
-					<option value="price-high-to-low">Credit</option>
+					<option value="debit">Debit</option>
+					<option value="credit">Credit</option>
 				</select>
 			</div>
 		</div>
@@ -75,7 +80,7 @@
 
 		<div class="flex items-center mb-4 mt-2">
 			<input type="checkbox" name="aggrement" id="aggrement"
-				class="text-primary focus:ring-0 rounded-sm cursor-pointer w-3 h-3">
+				class="checkbox checkbox-primary rounded-md checkbox-sm" required>
 			<label for="aggrement" class="text-gray-600 ml-3 cursor-pointer text-sm">I agree to the <a href="#"
 					class="text-primary">terms & conditions</a></label>
 		</div>
@@ -87,3 +92,18 @@
 
 </div>
 <!-- ./wrapper -->
+
+
+<style lang='postcss'>
+	.form-stuffs div {
+		@apply flex items-center;
+	}
+
+	.form-stuffs input {
+		@apply input input-bordered grow;
+	}
+
+	.form-stuffs label {
+		@apply w-36;
+	}
+</style>

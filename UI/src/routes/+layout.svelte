@@ -12,16 +12,6 @@
 
 	import paymentImg from '$lib/assets/methods.png';
 
-	let username = 'an';
-
-	function account(){
-		if (username === 'Login'){
-			window.location.href ='/login'
-		} else {
-			window.location.href ='/profile/'// +username
-		}
-	}
-
 	// +layout.server.ts
 	export let data;
 
@@ -37,58 +27,58 @@
 
 <!-- header -->
 <header class="shadow-sm bg-white flex items-center justify-between px-16">
-		<a href="/" class="px-2 p-4">
-			<Logo width="3rem" height="3rem"/>
-		</a>
+	<a href="/" class="px-2 p-4">
+		<Logo width="3rem" height="3rem"/>
+	</a>
 
-		<form method="GET" action="/shop" on:formdata={logData}
-			class="join border border-primary flex justify-between w-2/5 ">
-			<input type="text" name="search" id="searchBar"
-				class="join-item input w-full min-w-12 focus:outline-none pl-12 hidden md:flex"
-				placeholder="Search">
+	<form method="GET" action="/shop" on:formdata={logData}
+		class="join border border-primary flex justify-between w-2/5 ">
+		<input type="text" name="search" id="searchBar"
+			class="join-item input w-full min-w-12 focus:outline-none pl-12 hidden md:flex"
+			placeholder="Search">
 
-			<SearchIcon class="absolute m-3" width="1.5rem" height="1.5rem"/>
+		<SearchIcon class="absolute m-3" width="1.5rem" height="1.5rem"/>
 
-			<button type="submit" class="join-item btn px-8 btn-primary">Search</button>
-		</form>
+		<button type="submit" class="join-item btn px-8 btn-primary">Search</button>
+	</form>
 
-		<div class="flex items-center gap-4">
-			<!-- TODO: -->
+	<div class="flex items-center gap-4">
+		<!-- TODO: -->
 <!-- 			<a href="/wishlist" class="text-center text-gray-700 hover:text-primary transition relative">
+			<div class="indicator">
+				<HeartIcon width="1.5rem" height="1.5rem"/>
+				<span class="badge-num">8</span>
+			</div>
+			<div class="text-sm">Wishlist</div>
+		</a> -->
+
+		<!-- TODO THIS: -->
+		{#if data.user}
+			<a href="/profile/cart" class="top-icon-button">
 				<div class="indicator">
-					<HeartIcon width="1.5rem" height="1.5rem"/>
-					<span class="badge-num">8</span>
+					<CartIcon width="1.5rem" height="1.5rem"/>
+					{#if data.user.cart.length > 0}
+						<span class="badge-numbered">{data.user.cart.length}</span>
+					{/if}
 				</div>
-				<div class="text-sm">Wishlist</div>
-			</a> -->
+				<div class="text-sm leading-3">Cart</div>
+			</a>
 
-			<!-- TODO THIS: -->
-			{#if data.user}
-				<a href="/cart" class="top-icon-button">
-					<div class="indicator">
-						<CartIcon width="1.5rem" height="1.5rem"/>
-						{#if data.user.cartcount > 0}
-							<span class="badge-numbered">{data.user.cartcount}</span>
-						{/if}
-					</div>
-					<div class="text-sm leading-3">Cart</div>
-				</a>
-
-				<a href="/profile" class="top-icon-button">
-					<div class="indicator px-2">
-						<UserIcon width="1.5rem" height="1.5rem"/>
-					</div>
-					<div class="text-sm leading-3">{data.user.name}</div>
-				</a>
-			{:else}
-				<a href="/login" class="btn btn-primary pl-1">
-					<div class="indicator px-2 invert">
-						<UserIcon width="1.5rem" height="1.5rem"/>
-					</div>
-					<div class="text-sm leading-3">Login</div>
-				</a>
-			{/if}
-		</div>
+			<a href="/profile" class="top-icon-button">
+				<div class="indicator px-2">
+					<UserIcon width="1.5rem" height="1.5rem"/>
+				</div>
+				<div class="text-sm leading-3">{data.user.info.user_name}</div>
+			</a>
+		{:else}
+			<a href="/login" class="btn btn-primary pl-1">
+				<div class="indicator px-2 invert">
+					<UserIcon width="1.5rem" height="1.5rem"/>
+				</div>
+				<div class="text-sm leading-3">Login</div>
+			</a>
+		{/if}
+	</div>
 </header>
 
 <!-- navbar -->

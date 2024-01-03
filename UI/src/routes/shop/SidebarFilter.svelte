@@ -5,8 +5,8 @@
 
 	const params = $page.url.searchParams;
 	let selectedCategories = params.getAll('selectcat').map(text => parseInt(text, 10));
-	const querymin = parseInt(params.get('min'), 10);
-	const querymax = parseInt(params.get('max'), 10);
+	const querymin = params.get('min') ? parseInt(params.get('min'), 10) : undefined;
+	const querymax = params.get('max') ? parseInt(params.get('max'), 10) : undefined;
 
 	$: console.log(selectedCategories);
 
@@ -23,7 +23,7 @@
 </script>
 
 <!-- ./sidebar -->
-<form method="GET" action="?/" on:formdata={logData}
+<form method="GET" action="/shop" on:formdata={logData}
 	class="col-span-1 bg-white px-4 pb-6 shadow rounded overflow-hidden hidden md:block divide-y divide-gray-200 space-y-5">
 		<div class="pt-4">
 			<h3 class="text-xl text-gray-800 mb-3 uppercase font-medium">Categories</h3>
