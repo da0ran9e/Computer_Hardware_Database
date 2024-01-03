@@ -25,22 +25,24 @@ BEGIN
 	END IF;
 END;
 $$ LANGUAGE plpgsql;
+--SELECT admin_add_item('admin1', 'password1', 1, 'Sample Item', 'Description', '', '', '', '', 50.00, 100.00, 1) AS result;
+
 
 -- Admin Function to remove an item
 CREATE OR REPLACE FUNCTION admin_remove_item(
     in_username VARCHAR(50),
     in_pass VARCHAR(50),
-    in_product_name VARCHAR(100)
+    in_product_id INT
 )
 RETURNS INTEGER AS $$
 BEGIN
     IF is_admin(in_username, in_pass) THEN
         DELETE FROM item
-        WHERE product_name = in_product_name;
+        WHERE product_id = in_product_id;
 
         -- Delete the item from all warehouses
         DELETE FROM inventory
-        WHERE product_id = (SELECT product_id FROM item WHERE product_name = in_product_name);
+        WHERE product_id = in_product_id;
 
         RETURN 1; -- Success
     ELSE
@@ -48,21 +50,24 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+--SELECT admin_remove_item('admin1', 'password1', 'Sample Item') AS result;
 
--- Admin Function to add one item to inventory
-CREATE OR REPLACE FUNCTION add_one_to_inventory(
+
+-- Admin Function to add item to inventory/warehouse
+CREATE OR REPLACE FUNCTION add_item_to_inventory(
     in_username VARCHAR(50),
     in_pass VARCHAR(50),
     in_warehouse_id INT,
-    in_product_id INT
+    in_product_id INT,
+	in_quantity INT
 )
 RETURNS INTEGER AS $$
 BEGIN
     IF is_admin(in_username, in_pass) THEN
         INSERT INTO inventory (warehouse_id, product_id, quantity)
-        VALUES (in_warehouse_id, in_product_id, 1)
+        VALUES (in_warehouse_id, in_product_id, in_quantity)
         ON CONFLICT (warehouse_id, product_id)
-        DO UPDATE SET quantity = inventory.quantity + 1;
+        DO UPDATE SET quantity = inventory.quantity + in_quantity;
         
         RETURN 1; -- Success
     ELSE
@@ -70,20 +75,28 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+--SELECT add_item_to_inventory('admin1', 'password1', 1, 1, 100) AS result;
 
--- Admin Function to remove one item from inventory
-CREATE OR REPLACE FUNCTION remove_one_from_inventory(
+
+-- Admin Function to remove item from inventory/warehouse
+CREATE OR REPLACE FUNCTION remove_item_from_inventory(
     in_username VARCHAR(50),
     in_pass VARCHAR(50),
     in_warehouse_id INT,
-    in_product_id INT
+    in_product_id INT,
+	in_quantity INT
 )
 RETURNS INTEGER AS $$
 BEGIN
     IF is_admin(in_username, in_pass) THEN
         UPDATE inventory
-        SET quantity = GREATEST(quantity - 1, 0)
+        SET quantity = GREATEST(quantity - in_quantity, 0)
         WHERE warehouse_id = in_warehouse_id AND product_id = in_product_id;
+		
+		IF quantity = 0 THEN
+            -- Remove one item from inventory in the specified warehouse
+            DELETE FROM inventory
+            WHERE warehouse_id = warehouse_id AND product_id = product_id;
         
         RETURN 1; -- Success
     ELSE
@@ -91,67 +104,5 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
+--SELECT remove_item_from_inventory('admin1', 'password1', 1, 1, 1001) AS result;
 
--- Admin Function to add an item in warehouse
-CREATE OR REPLACE FUNCTION admin_add_item_in_warehouse(
-    in_username VARCHAR(50),
-    in_pass VARCHAR(50),
-    in_product_name VARCHAR(100),
-    in_warehouse_name VARCHAR(50)
-)
-RETURNS INTEGER AS $$
-DECLARE
-    product_id INT;
-    warehouse_id INT;
-BEGIN
-    IF is_admin(in_username, in_pass) THEN
-        SELECT product_id INTO product_id FROM item WHERE product_name = in_product_name;
-        SELECT warehouse_id INTO warehouse_id FROM warehouse WHERE warehouse_name = in_warehouse_name;
-
-        IF product_id IS NOT NULL AND warehouse_id IS NOT NULL THEN
-            -- Add the item to inventory in the specified warehouse
-            INSERT INTO inventory (quantity, warehouse_id, product_id)
-            VALUES (1, warehouse_id, product_id)
-            ON CONFLICT (warehouse_id, product_id)
-            DO UPDATE SET quantity = inventory.quantity + 1;
-            
-            RETURN 1; -- Success
-        ELSE
-            RETURN 0; -- Failed (Product or warehouse not found)
-        END IF;
-    ELSE
-        RETURN 0; -- Not an admin
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-
--- Admin Function to remove an item from warehouse
-CREATE OR REPLACE FUNCTION admin_remove_item_from_warehouse(
-    in_username VARCHAR(50),
-    in_pass VARCHAR(50),
-    in_product_name VARCHAR(100),
-    in_warehouse_name VARCHAR(50)
-)
-RETURNS INTEGER AS $$
-DECLARE
-    product_id INT;
-    warehouse_id INT;
-BEGIN
-    IF is_admin(in_username, in_pass) THEN
-        SELECT product_id INTO product_id FROM item WHERE product_name = in_product_name;
-        SELECT warehouse_id INTO warehouse_id FROM warehouse WHERE warehouse_name = in_warehouse_name;
-
-        IF product_id IS NOT NULL AND warehouse_id IS NOT NULL THEN
-            -- Remove one item from inventory in the specified warehouse
-            DELETE FROM inventory
-            WHERE warehouse_id = warehouse_id AND product_id = product_id;
-            
-            RETURN 1; -- Success
-        ELSE
-            RETURN 0; -- Failed (Product or warehouse not found)
-        END IF;
-    ELSE
-        RETURN 0; -- Not an admin
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
