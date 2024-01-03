@@ -16,7 +16,22 @@
 
 	let selectedWarehouse = data.warehouses[0];
 
+	// Imgs
+	import img1 from '$lib/assets/images/products/product1.jpg'
+	import img2 from '$lib/assets/images/products/product2.jpg'
+	import img3 from '$lib/assets/images/products/product3.jpg'
+	import img4 from '$lib/assets/images/products/product4.jpg'
+	import img5 from '$lib/assets/images/products/product5.jpg'
+	import img6 from '$lib/assets/images/products/product6.jpg'
 
+	const imgList = [img1, img2, img3, img4, img5, img6];
+
+	function getImage(id){
+		const imgId = id%6;
+		return imgList[imgId];
+	}
+
+	const selected = getImage(product.product_id);
 
 	// Dealing with add to cart
 	export let form;
@@ -37,14 +52,14 @@
 <!-- product-detail -->
 <div class="container grid grid-cols-2 gap-6 mx-auto p-8">
 	<div>
-		<img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="product" class="w-full">
+		<img src={getImage(product.product_id)} alt="product" class="w-full">
 		<div class="grid grid-cols-5 gap-4 mt-4">
-			<img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="product2"
+			<img src={getImage(product.product_id+1)} alt="product2"
 				class="w-full cursor-pointer border border-primary">
-			<img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="product2" class="w-full cursor-pointer border">
-			<img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="product2" class="w-full cursor-pointer border">
-			<img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="product2" class="w-full cursor-pointer border">
-			<img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="product2" class="w-full cursor-pointer border">
+			<img src={getImage(product.product_id+2)} alt="product2" class="w-full cursor-pointer border">
+			<img src={getImage(product.product_id+3)} alt="product2" class="w-full cursor-pointer border">
+			<img src={getImage(product.product_id+4)} alt="product2" class="w-full cursor-pointer border">
+			<img src={getImage(product.product_id+5)} alt="product2" class="w-full cursor-pointer border">
 		</div>
 	</div>
 
@@ -103,7 +118,7 @@
 			{/if}
 		</div>
 
-		<form method="POST" action="?/" use:enhance
+		<form method="POST" use:enhance
 			class="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
 
 			<input type="hidden" name="email" value={usermail} />
