@@ -20,6 +20,20 @@
 		}
 	}
 
+	import img1 from '$lib/assets/images/products/product1.jpg'
+	import img2 from '$lib/assets/images/products/product2.jpg'
+	import img3 from '$lib/assets/images/products/product3.jpg'
+	import img4 from '$lib/assets/images/products/product4.jpg'
+	import img5 from '$lib/assets/images/products/product5.jpg'
+	import img6 from '$lib/assets/images/products/product6.jpg'
+
+	const imgList = [img1, img2, img3, img4, img5, img6];
+
+	function getImage(id){
+		const imgId = id%6;
+		return imgList[imgId];
+	}
+
 	// Add to cart part
 	$: maildata = data?.user?.info.email;
 	$: usermail = maildata ? maildata : '';
@@ -75,7 +89,7 @@
 			{#each allItems as product (product.product_id)}
 			<div class="card card-compact shadow-md rounded group">
 				<a href={`/product/${product.product_id}`} class="h-full flex flex-col">
-					<figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+					<figure><img src={getImage(product.product_id)} alt="Shoes" /></figure>
 					<div class="card-body flex justify-between">
 						<h4 class="card-title uppercase group-hover:text-primary transition">
 							{product.product_name}
