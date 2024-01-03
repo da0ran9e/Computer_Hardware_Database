@@ -258,6 +258,35 @@ END;
 $$ LANGUAGE plpgsql;
 -- SELECT update_order_item_quantity(2, 211, 3) AS result;
 
+--DROP FUNCTION IF EXISTS get_user_order_list(varchar)
+-- Function to get a list of orders for a user
+CREATE OR REPLACE FUNCTION get_user_order_list(in_email VARCHAR(150))
+RETURNS TABLE (
+    order_id INT,
+    order_date DATE,
+    shipping_address VARCHAR(150),
+    total_amount NUMERIC(12,2),
+    status VARCHAR(15),
+    payment_type VARCHAR(6)
+)
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        o.order_id,
+        o.order_date,
+        o.shipping_address,
+        o.total_amount,
+        o.status,
+        o.payment_type
+    FROM
+        orders o
+    WHERE
+        o.user_id = (SELECT user_id FROM account WHERE email = in_email);
+END;
+$$ LANGUAGE plpgsql;
+--SELECT * FROM get_user_order_list('user3@gmail.com');
+
 
 --DROP FUNCTION IF EXISTS get_order_info(INT)
 -- Function to get information about an order including order_items
