@@ -1,18 +1,37 @@
 <script lang='ts'>
+	import CartIcon from '$lib/icons/cart.svg?component';
+	import toast from 'svelte-french-toast';
+	import { enhance } from '$app/forms';
+
+	import Counter from '$lib/Counter.svelte';
+	let count;
+
 	// Connect to +page.server.ts
 	export let data;
+	// console.log(data);
 
 	const product = data.info;
+	$: maildata = data?.user?.info.email;
+	$: usermail = maildata ? maildata : '';
 
-	let selectedWarehouse;
+	let selectedWarehouse = data.warehouses[0];
 
-	let count = 0;
-	function increase(){
-		count +=1;
+
+
+	// Dealing with add to cart
+	export let form;
+
+	$: notify(form?.addcart);
+	function notify(changed) {
+		if (form?.addcart === true) {
+			toast.success("Added to cart");	
+		}
+		if (form?.errmsg) {
+			toast.error(form.errmsg);
+		}
 	}
-	function decrease(){
-		count===0 ? 0:count-=1;
-	}
+
+
 </script>
 
 <!-- product-detail -->
@@ -57,11 +76,7 @@
 		
 		<div>
 			<h3 class="text-sm font-semibold uppercase mb-1">Quantity:</h3>
-			<div class="flex border border-gray-300 divide-x divide-gray-300 w-max">
-				<div on:click={decrease} class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">-</div>
-				<div class="h-8 w-8 text-base flex items-center justify-center">{count}</div>
-				<div on:click={increase} class="h-8 w-8 text-xl flex items-center justify-center cursor-pointer select-none">+</div>
-			</div>
+			<Counter bind:count />
 		</div>
 		
 
@@ -88,16 +103,34 @@
 			{/if}
 		</div>
 
-		<div class="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
-			<a href="#"
+		<form method="POST" action="?/" use:enhance
+			class="mt-6 flex gap-3 border-b border-gray-200 pb-5 pt-5">
+
+			<input type="hidden" name="email" value={usermail} />
+			<input type="hidden" name="quantity" value={count} />
+			<input type="hidden" name="productID" value={data?.info.product_id} />
+
+			<button type="submit"
 				class="bg-primary border border-primary text-white px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:bg-transparent hover:text-primary transition">
-				<i class="fa-solid fa-bag-shopping"></i> Add to cart
-			</a>
-			<a href="#"
+				<span class="icon cart-icon"></span> Add to cart
+			</button>
+<!-- 			<a href="#"
 				class="border border-gray-300 px-8 py-2 font-medium rounded uppercase flex items-center gap-2 hover:text-primary transition">
 				<i class="fa-solid fa-heart"></i> Wishlist
-			</a>
-		</div>
+			</a> -->
+		</form>
 	</div>
 </div>
 <!-- ./product-detail -->
+
+<style>
+	.icon {
+		mask-size: contain;
+		width: 1.5rem;
+		height: 1.5rem;
+		background-color: currentColor;
+	}
+	.cart-icon {
+		mask-image: url($lib/icons/cart.svg);
+	}
+</style>

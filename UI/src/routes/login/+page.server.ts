@@ -25,6 +25,7 @@ export const actions = {
 		// Seet cookies here
 		if (!succ) {
 			// $page.form, return to the "export let form" of +page.svelte
+			console.log("Login failed.");
 			return { loginsuccess: succ }			
 		}
 

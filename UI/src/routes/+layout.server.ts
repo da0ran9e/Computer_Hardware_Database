@@ -5,16 +5,21 @@ export async function load({ locals, cookies }) {
 	const usermail = getUserCookies(cookies);
 	console.log("Reloaded Layout")
 
-	if (!usermail) {
-		return {}
-	}
+	if (!usermail) { return {} }
 
-	// Logged in
-	const res_user = await locals.client.query('SELECT * FROM account WHERE email = $1', [usermail]);
+	// Logged in (no query password)
+	const res_user = 
+		await locals.client.query('SELECT user_id, user_name, email, phone_number FROM account WHERE email = $1', [usermail]);
+		
+	if (!res_user.rows[0]) { return {} }
+
+	const res_cart =
+		await locals.client.query('SELECT * FROM get_user_cart($1)', [usermail]);
+
 	return { 
 		user: {
-			name: res_user.rows[0].user_name,
-			cartcount: 1
+			info: res_user.rows[0],
+			cart: res_cart.rows
 		}
 	}
 }
