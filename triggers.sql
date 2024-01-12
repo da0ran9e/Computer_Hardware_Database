@@ -72,4 +72,38 @@ AFTER INSERT OR DELETE OR UPDATE ON order_item
 FOR EACH ROW
 EXECUTE FUNCTION update_inventory_quantity();
 
+-- Create trigger to delete if quantity in cart = 0
+CREATE OR REPLACE FUNCTION delete_zero_quantity_cart_item()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.quantity = 0 THEN
+        DELETE FROM cart_item
+        WHERE cart_id = NEW.cart_id AND product_id = NEW.product_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_zero_quantity_cart_item
+AFTER UPDATE ON cart_item
+FOR EACH ROW
+EXECUTE FUNCTION delete_zero_quantity_cart_item();
+
+-- Create trigger to delete if quantity in order = 0
+CREATE OR REPLACE FUNCTION delete_zero_quantity_order_item()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.quantity = 0 THEN
+        DELETE FROM order_item
+        WHERE order_id = NEW.order_id AND product_id = NEW.product_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_zero_quantity_order_item
+AFTER UPDATE ON order_item
+FOR EACH ROW
+EXECUTE FUNCTION delete_zero_quantity_order_item();
+
 
