@@ -106,4 +106,29 @@ AFTER UPDATE ON order_item
 FOR EACH ROW
 EXECUTE FUNCTION delete_zero_quantity_order_item();
 
+-- Trigger function to check inventory quantity before updating order_item
+CREATE OR REPLACE FUNCTION check_inventory_quantity()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Check if the new quantity in order_item is greater than the available quantity in inventory
+    IF NEW.quantity > (
+        SELECT COALESCE(SUM(quantity), 0)
+        FROM inventory
+        WHERE product_id = NEW.product_id AND warehouse_id = NEW.warehouse_id
+    ) THEN
+        -- Raise an exception to prevent the update
+        RAISE EXCEPTION 'Insufficient inventory quantity for product % in warehouse %', NEW.product_id, NEW.warehouse_id;
+    END IF;
+
+    -- If the check passes, allow the update
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the trigger
+CREATE TRIGGER check_inventory_before_update
+BEFORE UPDATE ON order_item
+FOR EACH ROW
+EXECUTE FUNCTION check_inventory_quantity();
+
 
