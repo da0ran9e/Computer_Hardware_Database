@@ -72,4 +72,63 @@ AFTER INSERT OR DELETE OR UPDATE ON order_item
 FOR EACH ROW
 EXECUTE FUNCTION update_inventory_quantity();
 
+-- Create trigger to delete if quantity in cart = 0
+CREATE OR REPLACE FUNCTION delete_zero_quantity_cart_item()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.quantity = 0 THEN
+        DELETE FROM cart_item
+        WHERE cart_id = NEW.cart_id AND product_id = NEW.product_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_zero_quantity_cart_item
+AFTER UPDATE ON cart_item
+FOR EACH ROW
+EXECUTE FUNCTION delete_zero_quantity_cart_item();
+
+-- Create trigger to delete if quantity in order = 0
+CREATE OR REPLACE FUNCTION delete_zero_quantity_order_item()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.quantity = 0 THEN
+        DELETE FROM order_item
+        WHERE order_id = NEW.order_id AND product_id = NEW.product_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_zero_quantity_order_item
+AFTER UPDATE ON order_item
+FOR EACH ROW
+EXECUTE FUNCTION delete_zero_quantity_order_item();
+
+-- Trigger function to check inventory quantity before updating order_item
+CREATE OR REPLACE FUNCTION check_inventory_quantity()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Check if the new quantity in order_item is greater than the available quantity in inventory
+    IF NEW.quantity > (
+        SELECT COALESCE(SUM(quantity), 0)
+        FROM inventory
+        WHERE product_id = NEW.product_id AND warehouse_id = NEW.warehouse_id
+    ) THEN
+        -- Raise an exception to prevent the update
+        RAISE EXCEPTION 'Insufficient inventory quantity for product % in warehouse %', NEW.product_id, NEW.warehouse_id;
+    END IF;
+
+    -- If the check passes, allow the update
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the trigger
+CREATE TRIGGER check_inventory_before_update
+BEFORE UPDATE ON order_item
+FOR EACH ROW
+EXECUTE FUNCTION check_inventory_quantity();
+
 

@@ -4,17 +4,10 @@ RETURNS INTEGER AS $$
 DECLARE
     result INTEGER;
 BEGIN
-    -- Check if the email already exists
-    IF EXISTS (SELECT 1 FROM account WHERE email = in_email) THEN
-        -- email already exists, set result to 0
-        result := 0;
-    ELSE
-        -- email doesn't exist, proceed with the insertion
         INSERT INTO account (user_name, password, email, phone_number)
         VALUES (in_username, in_password, in_email, in_phone_number);
 
         GET DIAGNOSTICS result = ROW_COUNT;
-    END IF;
 
     RETURN result;
 END;
@@ -53,7 +46,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 --SELECT login_account('user1@gmail.com', 'password1');
---SELECT login_account('user1', 'password1');
 
 --DROP FUNCTION change_password(character varying,character varying, character varying)
 -- Function to change password
@@ -132,7 +124,7 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE plpgsql;
---SELECT add_item_to_cart(69, 5, 'user3@gmail.com'); 
+--SELECT add_item_to_cart(211, 1, 'user3@gmail.com'); 
 
 
 -- Function to update the quantity of an item in cart
@@ -140,14 +132,8 @@ CREATE OR REPLACE FUNCTION update_cart_item_quantity(in_cart_id INT, in_product_
 RETURNS INTEGER AS $$
 BEGIN
     UPDATE cart_item
-    SET quantity = GREATEST(in_new_quantity, 0)
+    SET quantity = in_new_quantity
     WHERE cart_id = in_cart_id AND product_id = in_product_id;
-
-    -- Check if the quantity became zero, and delete the entry if so
-    IF in_new_quantity = 0 THEN
-        DELETE FROM cart_item
-        WHERE cart_id = in_cart_id AND product_id = in_product_id;
-    END IF;
 
     RETURN 1; -- Success
 EXCEPTION
@@ -155,7 +141,7 @@ EXCEPTION
         RETURN 0; -- Failed
 END;
 $$ LANGUAGE plpgsql;
---SELECT update_cart_item_quantity(3, 211, 3) AS result;
+--SELECT update_cart_item_quantity(3, 211, 0) AS result;
 
 
 --DROP FUNCTION IF EXISTS create_order(character varying)
@@ -191,6 +177,7 @@ RETURNS INTEGER AS $$
 DECLARE
     existing_quantity INT;
     in_cart_id INT;
+    cart_quantity INT; -- Variable to store the quantity from cart_item
 BEGIN
     -- Get the cart_id for the user
     SELECT c.cart_id INTO in_cart_id
@@ -198,38 +185,42 @@ BEGIN
     JOIN account a ON c.user_id = a.user_id
     JOIN orders o ON a.user_id = o.user_id
     WHERE o.order_id = in_order_id;
-
-    -- Check if the item is already in the order_item
-    SELECT quantity INTO existing_quantity
-    FROM order_item
-    WHERE order_id = in_order_id AND product_id = in_product_id;
-
-    IF existing_quantity IS NOT NULL THEN
-        -- Increment the quantity by 1 if the item is already in orders_item
-        UPDATE order_item
-        SET quantity = existing_quantity + 1
-        WHERE order_id = in_order_id AND product_id = in_product_id;
-
-        RETURN 1; -- Success
-    ELSE
-        -- Check if the item is in the user's cart
+	
+    -- Check if the item is in the user's cart
+    SELECT quantity INTO cart_quantity
+    FROM cart_item
+    WHERE cart_id = in_cart_id AND product_id = in_product_id;
+ 		
+    IF cart_quantity IS NOT NULL THEN
+        -- Check if the item is already in the order_item
         SELECT quantity INTO existing_quantity
-        FROM cart_item
-        WHERE cart_id = in_cart_id AND product_id = in_product_id;
-
+        FROM order_item
+        WHERE order_id = in_order_id AND product_id = in_product_id;
+			
         IF existing_quantity IS NOT NULL THEN
-            -- Add the item to order_item from the user's cart
-            INSERT INTO order_item (quantity, order_id, warehouse_id, product_id)
-            VALUES (existing_quantity, in_order_id, in_warehouse_id, in_product_id);
-
-            -- Delete the item from the user's cart
+            -- Increment the quantity by the quantity in cart
+            UPDATE order_item
+            SET quantity = existing_quantity + cart_quantity
+            WHERE order_id = in_order_id AND product_id = in_product_id;
+			
+			-- Delete the item from the user's cart
             DELETE FROM cart_item
             WHERE cart_id = in_cart_id AND product_id = in_product_id;
 
             RETURN 1; -- Success
-        ELSE
-            RETURN 0; -- Failed (Product not found in cart or order_item)
+        ELSE -- if the item is not in the order already
+            -- Add the item to order_item from the user's cart
+            INSERT INTO order_item (quantity, order_id, warehouse_id, product_id)
+            VALUES (cart_quantity, in_order_id, in_warehouse_id, in_product_id);
+
+            -- Delete the item from the user's cart
+            DELETE FROM cart_item
+            WHERE cart_id = in_cart_id AND product_id = in_product_id;
+    			
+            RETURN 1; -- Success
         END IF;
+    ELSE
+        RETURN 0;
     END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -241,7 +232,7 @@ CREATE OR REPLACE FUNCTION update_order_item_quantity(in_order_id INT, in_produc
 RETURNS INTEGER AS $$
 BEGIN
     UPDATE order_item
-    SET quantity = GREATEST(in_new_quantity, 0)
+    SET quantity = in_new_quantity
     WHERE order_id = in_order_id AND product_id = in_product_id;
 
     -- Check if the quantity became zero, and delete the entry if so
@@ -256,7 +247,7 @@ EXCEPTION
         RETURN 0; -- Failed
 END;
 $$ LANGUAGE plpgsql;
--- SELECT update_order_item_quantity(2, 211, 3) AS result;
+-- SELECT update_order_item_quantity(2, 211, 4) AS result;
 
 --DROP FUNCTION IF EXISTS get_user_order_list(varchar)
 -- Function to get a list of orders for a user

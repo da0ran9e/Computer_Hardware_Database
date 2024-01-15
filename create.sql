@@ -40,9 +40,13 @@ CREATE TABLE account
   user_id SERIAL PRIMARY KEY,
   user_name VARCHAR(50) NOT NULL,
   password VARCHAR(50) NOT NULL,
-  email VARCHAR(150) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL, 
   phone_number VARCHAR(20) DEFAULT NULL
 );
+
+--ALTER TABLE account
+--ADD CONSTRAINT unique_email UNIQUE (email);
+
 
 -- ALTER TABLE orders
 -- ALTER COLUMN total_amount TYPE NUMERIC(10, 2)
